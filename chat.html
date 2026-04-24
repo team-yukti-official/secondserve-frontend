@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://openrouter.ai" crossorigin>
+  <link rel="dns-prefetch" href="https://openrouter.ai">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Serve Bot AI Chat</title>
+
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --bg-page: #f7f7f7;
+      --bg-chat: #ffffff;
+      --bg-user-msg: #e3f2fd;
+      --bg-bot-msg: #ffffff;
+      --border-color: #eeeeee;
+      --text-primary: #212121;
+      --text-muted: #757575;
+      --input-bg: #ffffff;
+      --header-grad: linear-gradient(135deg, #2e7d32, #66bb6a);
+      --send-btn: #ffa000;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --toggle-icon: "🌙";
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #121212;
+      --bg-chat: #1e1e1e;
+      --bg-user-msg: #1a3a4a;
+      --bg-bot-msg: #2a2a2a;
+      --border-color: #333333;
+      --text-primary: #e0e0e0;
+      --text-muted: #9e9e9e;
+      --input-bg: #2a2a2a;
+      --header-grad: linear-gradient(135deg, #1b5e20, #388e3c);
+      --send-btn: #ff8f00;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --toggle-icon: "☀️";
+    }
+
+    /* Heart theme — only header nav + send button change */
+    .heart-theme {
+      --header-grad: linear-gradient(135deg, #c2185b, #e91e63, #f06292);
+      --send-btn:    #e91e63;
+    }
+
+    [data-theme="dark"].heart-theme {
+      --header-grad: linear-gradient(135deg, #880e4f, #c2185b);
+      --send-btn:    #c2185b;
+    }
+
+    /* ── Base ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #chatbox {
+      width: 100%;
+      height: 100vh;
+      background: var(--bg-chat);
+      display: flex;
+      flex-direction: column;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    /* ── Header ── */
+    #chat-header {
+      background: var(--header-grad);
+      color: #fff;
+      padding: 12px 14px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #theme-toggle,
+    #close-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    #theme-toggle:hover,
+    #close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ── Messages ── */
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      background: var(--bg-page);
+      transition: background 0.3s;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) transparent;
+    }
+
+    #messages::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    #messages::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .msg {
+      margin: 8px 0;
+      padding: 10px 13px;
+      border-radius: 14px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+      color: var(--text-primary);
+    }
+
+    .user {
+      background: var(--bg-user-msg);
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bot {
+      background: var(--bg-bot-msg);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: 4px;
+      box-shadow: var(--shadow);
+    }
+
+    /* ── Input area ── */
+    #input-area {
+      display: flex;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-chat);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    #input {
+      flex: 1;
+      border: none;
+      padding: 12px 14px;
+      outline: none;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #input::placeholder {
+      color: var(--text-muted);
+    }
+
+    button.send {
+      background: var(--send-btn);
+      border: none;
+      color: white;
+      padding: 0 18px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s, opacity 0.2s;
+    }
+
+    button.send:hover {
+      opacity: 0.88;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="chatbox">
+    <div id="chat-header">
+      <span>Serve Bot</span>
+      <div class="header-actions">
+        <button id="theme-toggle" title="Toggle dark/light mode" onclick="toggleTheme()"><i
+            class="fas fa-moon"></i></button>
+        <button id="close-btn" onclick="closeChat()">✖</button>
+      </div>
+    </div>
+
+    <div id="messages"></div>
+
+    <div id="input-area">
+      <input id="input" placeholder="Ask about donating..." />
+      <button class="send" onclick="send()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script src="script/env-config.js"></script>
+  <script>
+    /* ══════════════════════════════════════════
+       THEME LOGIC
+       Priority: URL param > postMessage from parent > OS preference
+       ══════════════════════════════════════════ */
+    const STORAGE_KEY = "linkbot_theme";
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      document.getElementById("theme-toggle").innerHTML = theme === "dark" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      try { localStorage.setItem(STORAGE_KEY, theme); } catch (e) { }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme") || "light";
+      const next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+      // Notify parent page (if embedded in iframe)
+      try { window.parent.postMessage({ type: "themeChange", theme: next }, "*"); } catch (e) { }
+    }
+
+    (function initTheme() {
+      // 1. URL param: ?theme=dark / ?theme=light / ?dark=1
+      try {
+        const p = new URLSearchParams(window.location.search);
+        if (p.get("theme") === "dark" || p.get("dark") === "1") { applyTheme("dark"); return; }
+        if (p.get("theme") === "light" || p.get("light") === "1") { applyTheme("light"); return; }
+        // Heart theme param
+        if (p.get("theme") === "heart" || p.get("heart") === "1") {
+          document.body.classList.add("heart-theme");
+        }
+      } catch (e) { }
+
+      // 2. Saved preference
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) { applyTheme(saved); return; }
+      } catch (e) { }
+
+      // 3. OS preference
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(prefersDark ? "dark" : "light");
+
+      // 4. Live OS preference changes
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
+        // Only follow OS if no manual preference saved
+        try { if (!localStorage.getItem(STORAGE_KEY)) applyTheme(e.matches ? "dark" : "light"); }
+        catch (_) { applyTheme(e.matches ? "dark" : "light"); }
+      });
+    })();
+
+    // Listen for postMessage from parent page to sync theme
+    window.addEventListener("message", (e) => {
+      if (e.data && e.data.type === "setTheme") {
+        applyTheme(e.data.theme === "dark" ? "dark" : "light");
+      }
+      // Legacy close message handling
+      // no-op for other messages
+    });
+
+    /* ══════════════════════════════════════════
+       CHATBOT LOGIC
+       ══════════════════════════════════════════ */
+    const API_KEY =
+      window.ENV_CONFIG?.AI?.OPENROUTER_API_KEY ||
+      localStorage.getItem("feedlink_openrouter_api_key") ||
+      "";
+    const OPENROUTER_MODEL =
+      window.ENV_CONFIG?.AI?.OPENROUTER_MODEL ||
+      "openai/gpt-oss-20b";
+
+    const SYSTEM_PROMPT = `
+You are Second Serve & Second Smile AI 🤖
+
+Second Serve = food donation platform in India, specially west-Bengal.
+Second Smile = clothes, books, toys donation platform in India, specially west-Bengal.
+Made by team YUKTI from CEM,Kolaghat.
+Developed by TEAM YUKTI.
+You help users:
+- Donate food 🍱
+- Donate clothes 👕
+- Donate books 📚
+- Donate toys 🧸
+- Find NGOs
+- Food safety tips
+- Social impact awareness
+- Answer general questions about Second Serve & Second Smile
+- Provide donation guidance and encouragement
+- Always promote kindness, positivity, and the joy of giving!
+-Allways use emoji at the end of your messages to make it more friendly and engaging.
+-Don't answer anything unrelated to the project. If you don't know the answer, say "I'm not sure about that, but I'm here to help with anything related to Second Serve & Second Smile!" and encourage users to ask about donations or impact.
+
+Tone: warm, inspiring, short replies.
+Encourage kindness and helping people.
+Always promote donation and positivity.
+`;
+
+    const MAX_CHAT_HISTORY = 8;
+    let chatHistory = [{ role: "system", content: SYSTEM_PROMPT.trim() }];
+
+    function closeChat() {
+      window.parent.postMessage("closeFeedlinkChat", "*");
+    }
+
+    async function send() {
+      const input = document.getElementById("input");
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+      addMsg(text, "user");
+      chatHistory.push({ role: "user", content: text });
+
+      const fixed = getFixedReply(text);
+      if (fixed) { addMsg(fixed, "bot"); return; }
+
+      if (!API_KEY) {
+        addMsg("AI assistant is temporarily unavailable, but I can still help with donation basics here.", "bot");
+        return;
+      }
+
+      const replyNode = showTyping();
+      try {
+        const reply = await askGPT(chatHistory, (partial) => {
+          if (replyNode) {
+            replyNode.innerText = partial || "Typing...";
+            scrollBottom();
+          }
+        });
+        if (replyNode) {
+          replyNode.innerText = reply;
+        } else {
+          addMsg(reply, "bot");
+        }
+        chatHistory.push({ role: "assistant", content: reply });
+      } catch (e) {
+        if (replyNode) replyNode.remove();
+        addMsg("⚠️ AI connection error", "bot");
+      }
+
+      if (chatHistory.length > MAX_CHAT_HISTORY) {
+        chatHistory = [chatHistory[0], ...chatHistory.slice(-(MAX_CHAT_HISTORY - 1))];
+      }
+    }
+
+    function getFixedReply(text) {
+      const msg = text.toLowerCase();
+      if (msg.includes("hi") || msg.includes("hello") || msg.includes("hey"))
+        return "Hello! I'm your Serve Bot 🤖 Here to help you with all things related to donating food, clothes, books, and toys. How can I assist you today? 😊";
+      if (msg.includes("who made second serve") || msg.includes("who made second smile") || msg.includes("who created you") || msg.includes("who built you"))
+        return "FeedLink was developed by team YUKTI from CEM Kolaghat";
+      if (msg.includes("who created you") || msg.includes("who built you"))
+        return "I was created by frontend developer of this project 🚀";
+      if (msg.includes("how to donate food") || msg.includes("food donation"))
+        return "🍱 To donate food:\n1️⃣ Click Donate\n2️⃣ Upload food photo\n3️⃣ Add location\nNearby NGOs will collect it 💚";
+      if (msg.includes("is food safe"))
+        return "Ensure food is fresh, not expired, and packed hygienically. Avoid uncovered or stale food.";
+      if (msg.includes("donate clothes") || msg.includes("clothes donation"))
+        return "👕 Welcome to Second Smile 💖\nDonate clean and usable clothes to help people in need.\nUpload photo + quantity to donate.";
+      if (msg.includes("donate books") || msg.includes("book donation"))
+        return "📚 Second Smile accepts book donations!\nSchool books, novels, guides — your books can change someone's future ✨";
+      if (msg.includes("donate toys") || msg.includes("toy donation"))
+        return "🧸 Donate toys via Second Smile!\nOld toys = New smiles 😊\nEnsure toys are safe and usable.";
+      if (msg.includes("what is second smile"))
+        return "💖 Second Smile is part of Second Serve's ecosystem.\nIt helps donate clothes, books, and toys to people in need.";
+      if (msg.includes("how to donate clothes") || msg.includes("second smile process"))
+        return "💖 Second Smile donation steps:\n1️⃣ Choose item type\n2️⃣ Upload image\n3️⃣ Add pickup location\nNGOs will contact you 📦";
+      return null;
+    }
+
+    async function askGPT(messages, onChunk) {
+      if (!API_KEY) {
+        throw new Error("Missing AI key");
+      }
+
+      const requestMessages = messages.slice(-MAX_CHAT_HISTORY);
+
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
+          "Accept": "text/event-stream, application/json",
+          "HTTP-Referer": window.location.href,
+          "X-Title": "FeedLink AI"
+        },
+        body: JSON.stringify({
+          model: OPENROUTER_MODEL,
+          messages: requestMessages,
+          temperature: 0.4,
+          max_tokens: 220,
+          stream: true
+        })
+      });
+      if (!res.ok) {
+        throw new Error("AI request failed");
+      }
+
+      const contentType = res.headers.get("content-type") || "";
+      if (!res.body || !contentType.includes("text/event-stream")) {
+        const data = await res.json();
+        return data?.choices?.[0]?.message?.content || "I'm here to help with Second Serve & Second Smile.";
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let fullReply = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split(/\r?\n/);
+        buffer = parts.pop() || "";
+
+        for (const line of parts) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data:")) continue;
+
+          const payload = trimmed.slice(5).trim();
+          if (!payload || payload === "[DONE]") {
+            continue;
+          }
+
+          let chunk;
+          try {
+            chunk = JSON.parse(payload);
+          } catch (err) {
+            continue;
+          }
+
+          const delta =
+            chunk?.choices?.[0]?.delta?.content ||
+            chunk?.choices?.[0]?.message?.content ||
+            "";
+
+          if (delta) {
+            fullReply += delta;
+            if (typeof onChunk === "function") {
+              onChunk(fullReply);
+            }
+          }
+        }
+      }
+
+      if (buffer.trim().startsWith("data:")) {
+        const payload = buffer.trim().slice(5).trim();
+        if (payload && payload !== "[DONE]") {
+          try {
+            const chunk = JSON.parse(payload);
+            const delta =
+              chunk?.choices?.[0]?.delta?.content ||
+              chunk?.choices?.[0]?.message?.content ||
+              "";
+            if (delta) {
+              fullReply += delta;
+              if (typeof onChunk === "function") onChunk(fullReply);
+            }
+          } catch (err) {
+            // Ignore trailing parse issues and use what we already collected.
+          }
+        }
+      }
+
+      return fullReply.trim() || "I'm here to help with Second Serve & Second Smile.";
+    }
+
+    function addMsg(text, type) {
+      const div = document.createElement("div");
+      div.className = "msg " + type;
+      div.innerText = text;
+      document.getElementById("messages").appendChild(div);
+      scrollBottom();
+    }
+
+    let typingDiv = null;
+    function showTyping() {
+      typingDiv = document.createElement("div");
+      typingDiv.className = "msg bot";
+      typingDiv.innerText = "Typing...";
+      document.getElementById("messages").appendChild(typingDiv);
+      scrollBottom();
+      return typingDiv;
+    }
+    function scrollBottom() {
+      const m = document.getElementById("messages");
+      m.scrollTop = m.scrollHeight;
+    }
+
+    document.getElementById("input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); send(); }
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Second Serve & Second Smile — NGO Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+/* ─── ROOT VARIABLES (mirrors all.css) ──────────────────────────────────── */
+:root {
+  --primary:       #2e7d32;
+  --primary-light: #66bb6a;
+  --primary-dark:  #1b5e20;
+  --primary-grad:  linear-gradient(135deg,#2e7d32 0%,#43a047 50%,#66bb6a 100%);
+  --accent:        #ffca28;
+  --accent-dark:   #ffa000;
+  --accent-grad:   linear-gradient(135deg,#ffca28,#ffa000);
+  --text-dark:     #1a1a2e;
+  --text-med:      #374151;
+  --text-light:    #6b7280;
+  --bg:            #f0f4f8;
+  --bg-white:      #ffffff;
+  --card:          #ffffff;
+  --border:        #e5e7eb;
+  --border-light:  #f3f4f6;
+  --shadow-sm:     0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:     0 4px 20px rgba(0,0,0,.10);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,.13);
+  --shadow-green:  0 4px 20px rgba(46,125,50,.25);
+  --r-sm:  8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-full: 9999px;
+  --ease: all .25s cubic-bezier(.4,0,.2,1);
+}
+body.dark-mode {
+  --text-dark:    #f1f5f9; --text-med:  #cbd5e1; --text-light: #94a3b8;
+  --bg:           #0f172a; --bg-white:  #1e293b; --card:       #1e293b;
+  --border:       #334155; --border-light:#253347;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.4); --shadow-md:0 4px 20px rgba(0,0,0,.5);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.6); --shadow-green:0 4px 20px rgba(102,187,106,.2);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter','Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text-dark);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ─── TOPBAR ─────────────────────────────────────────────────────────────── */
+.topbar{
+  background:var(--primary-grad);color:#fff;
+  padding:0 28px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 20px rgba(46,125,50,.35);
+}
+.brand{
+  display:flex;align-items:center;
+  text-decoration:none;
+  height:44px;flex-shrink:0;
+  transition:var(--ease);
+}
+.brand:hover{opacity:.9;transform:scale(1.02)}
+.brand svg{height:100%;width:auto}
+.topbar-right{display:flex;align-items:center;gap:10px}
+
+.icon-btn{
+  background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+  border-radius:50%;width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:1rem;cursor:pointer;transition:var(--ease);
+}
+.icon-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.5)}
+
+.cta-btn{
+  background:var(--accent-grad);color:#1b5e20;border:none;
+  padding:9px 20px;border-radius:var(--r-full);
+  font-weight:700;font-size:.85rem;cursor:pointer;transition:var(--ease);
+  display:inline-flex;align-items:center;gap:6px;
+  box-shadow:0 2px 10px rgba(255,202,40,.4);text-decoration:none;
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,202,40,.5)}
+
+/* CHAT POPUP */
+#chat-toggle{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:linear-gradient(135deg,#ffca28,#ffa000);
+  color:#1b5e20;
+  border:none;
+  padding:13px 22px;
+  border-radius:9999px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:.92rem;
+  z-index:9999;
+  box-shadow:0 8px 28px rgba(255,202,40,.4);
+  transition:var(--ease);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  letter-spacing:.02em;
+}
+#chat-toggle:hover{
+  background:linear-gradient(135deg,#ffd740,#ffab00);
+  transform:translateY(-3px);
+  box-shadow:0 12px 36px rgba(255,202,40,.5);
+}
+#chat-toggle.open{
+  background:linear-gradient(135deg,#1b5e20,#2e7d32);
+  color:#fff;
+}
+#chat-overlay{
+  position:fixed;
+  bottom:0;
+  right:24px;
+  width:380px;
+  height:520px;
+  display:none;
+  z-index:9999;
+  filter:drop-shadow(0 20px 50px rgba(0,0,0,.3));
+}
+#chat-overlay iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+  background:#fff;
+}
+
+/* ─── PAGE LAYOUT ────────────────────────────────────────────────────────── */
+.page-wrap{
+  display:flex;flex:1;
+  max-width:1300px;margin:0 auto;width:100%;
+  padding:28px 20px;gap:24px;align-items:flex-start;
+}
+
+/* ─── CARDS ──────────────────────────────────────────────────────────────── */
+.card{
+  background:var(--card);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);border:1px solid var(--border-light);
+  overflow:hidden;transition:var(--ease);
+}
+
+/* ─── LEFT SIDEBAR ───────────────────────────────────────────────────────── */
+.sidebar{
+  width:290px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:16px;
+  position:sticky;top:80px;
+}
+
+/* ─── PROFILE CARD ───────────────────────────────────────────────────────── */
+.profile-cover{
+  height:76px;
+  background:var(--primary-grad);
+  position:relative;
+}
+.profile-cover::after{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='28' fill='none' stroke='rgba(255,255,255,.08)' stroke-width='2'/%3E%3C/svg%3E") repeat;
+  opacity:.5;
+}
+
+.photo-wrap{
+  position:absolute;left:50%;bottom:-40px;
+  transform:translateX(-50%);
+}
+.profile-photo{
+  width:80px;height:80px;border-radius:50%;
+  border:4px solid var(--card);
+  background:var(--primary-grad);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;overflow:hidden;position:relative;
+  cursor:pointer;box-shadow:0 4px 16px rgba(46,125,50,.35);
+  transition:var(--ease);
+}
+.profile-photo img{
+  width:100%;height:100%;object-fit:cover;
+  position:absolute;border-radius:50%;
+}
+.photo-overlay{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;color:#fff;font-size:.85rem;gap:4px;
+}
+.profile-photo:hover .photo-overlay{opacity:1}
+
+.profile-body{padding:54px 20px 18px;text-align:center}
+.profile-name{
+  font-family:'Poppins',sans-serif;font-size:1.08rem;font-weight:700;
+  color:var(--text-dark);margin-bottom:3px;
+}
+.profile-sub{font-size:.8rem;color:var(--text-light);margin-bottom:10px}
+.verified-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(46,125,50,.1);color:var(--primary);
+  border:1px solid rgba(46,125,50,.2);
+  padding:4px 12px;border-radius:var(--r-full);
+  font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;
+}
+body.dark-mode .verified-pill{background:rgba(102,187,106,.12);border-color:rgba(102,187,106,.25);color:var(--primary-light)}
+
+.profile-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--border);margin:0 -20px;
+}
+.ps{padding:12px 4px;text-align:center;border-right:1px solid var(--border)}
+.ps:last-child{border-right:none}
+.ps-val{
+  font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:800;
+  color:var(--primary);display:block;
+}
+.ps-lbl{font-size:.66rem;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em}
+
+/* ─── PROFILE INFO / EDIT ────────────────────────────────────────────────── */
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px 0;
+}
+.sec-title{
+  font-size:.73rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--text-light);
+}
+.edit-btn{
+  background:none;border:none;color:var(--primary);
+  font-size:.78rem;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:4px;padding:0;
+  transition:var(--ease);font-family:'Inter',sans-serif;
+}
+.edit-btn:hover{color:var(--primary-dark)}
+
+.info-rows{padding:6px 20px 16px}
+.i-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 0;border-bottom:1px solid var(--border-light);
+  font-size:.84rem;
+}
+.i-row:last-child{border-bottom:none}
+.i-row i{color:var(--primary);width:16px;font-size:.8rem;margin-top:2px;flex-shrink:0}
+.i-val{color:var(--text-med);font-weight:500;word-break:break-word}
+.i-val.muted{color:var(--text-light);font-style:italic}
+
+.profile-form{padding:10px 20px 20px}
+.fl-field{margin-bottom:13px}
+.fl-field label{
+  display:block;font-size:.73rem;font-weight:700;
+  color:var(--text-light);margin-bottom:5px;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.fl-field input,
+.fl-field textarea,
+.fl-field select{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  background:var(--bg-white);color:var(--text-dark);
+  font-family:'Inter',sans-serif;font-size:.87rem;
+  transition:var(--ease);outline:none;
+}
+.fl-field textarea{resize:none;height:70px}
+.fl-field input:focus,.fl-field textarea:focus{
+  border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,125,50,.1);
+}
+.fl-field input[readonly]{
+  background:var(--border-light);color:var(--text-light);cursor:not-allowed;
+}
+body.dark-mode .fl-field input[readonly]{background:rgba(255,255,255,.04)}
+body.dark-mode .fl-field input,
+body.dark-mode .fl-field textarea{
+  background:rgba(255,255,255,.05);color:var(--text-dark);border-color:var(--border);
+}
+body.dark-mode .fl-field input:focus,
+body.dark-mode .fl-field textarea:focus{background:rgba(255,255,255,.08)}
+
+.lock-note{
+  font-size:.68rem;color:var(--text-light);
+  margin-top:4px;display:flex;align-items:center;gap:4px;
+}
+.save-btn{
+  width:100%;padding:11px;
+  background:var(--primary-grad);color:#fff;
+  border:none;border-radius:var(--r-md);
+  font-weight:700;font-size:.9rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:var(--ease);box-shadow:var(--shadow-green);margin-top:4px;
+  font-family:'Inter',sans-serif;
+}
+.save-btn:hover{background:linear-gradient(135deg,#1b5e20,#2e7d32);transform:translateY(-1px)}
+.save-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* ─── GOAL PROGRESS ──────────────────────────────────────────────────────── */
+.goal-body{padding:16px 20px}
+.goal-row{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px}
+.goal-row .pct{font-weight:700;color:var(--primary)}
+.prog-bar{background:var(--border);border-radius:var(--r-full);height:8px;overflow:hidden}
+.prog-fill{height:100%;border-radius:var(--r-full);background:var(--primary-grad);transition:width 1.2s ease}
+.goal-note{font-size:.74rem;color:var(--text-light);margin-top:6px}
+
+/* ─── SIDE NAV ───────────────────────────────────────────────────────────── */
+.side-nav{padding:10px 12px}
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:var(--r-md);
+  font-size:.88rem;font-weight:500;color:var(--text-med);
+  transition:var(--ease);
+  text-decoration:none;margin:2px 0;
+  border:none;background:none;width:100%;text-align:left;
+  cursor:pointer;font-family:'Inter',sans-serif;
+}
+.nav-link:hover{background:var(--border-light);color:var(--text-dark)}
+.nav-link.active{background:rgba(46,125,50,.1);color:var(--primary);font-weight:600}
+.nav-link i{width:18px;text-align:center;font-size:.88rem}
+.nav-link.danger{color:#ef4444}
+.nav-link.danger:hover{background:rgba(239,68,68,.08)}
+
+/* ─── MAIN AREA ──────────────────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;gap:20px;min-width:0}
+
+/* ─── STATS ──────────────────────────────────────────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat-card{
+  background:var(--card);border-radius:var(--r-lg);padding:20px;
+  border:1px solid var(--border-light);box-shadow:var(--shadow-sm);
+  transition:var(--ease);position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.sc-green::before{background:var(--primary-grad)}
+.sc-orange::before{background:var(--accent-grad)}
+.sc-blue::before{background:linear-gradient(135deg,#3b82f6,#60a5fa)}
+.sc-purple::before{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+
+.s-icon{
+  width:42px;height:42px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;margin-bottom:12px;
+}
+.si-g{background:rgba(46,125,50,.1);color:var(--primary)}
+.si-o{background:rgba(255,160,0,.12);color:#e65100}
+.si-b{background:rgba(59,130,246,.1);color:#3b82f6}
+.si-p{background:rgba(139,92,246,.1);color:#8b5cf6}
+
+.s-val{
+  font-family:'Poppins',sans-serif;font-size:1.85rem;font-weight:800;
+  color:var(--text-dark);letter-spacing:-.04em;line-height:1;
+}
+.s-lbl{font-size:.78rem;color:var(--text-light);margin-top:5px;font-weight:500}
+.s-delta{font-size:.72rem;margin-top:8px;font-weight:600;display:flex;align-items:center;gap:3px}
+.stat-link{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;color:var(--primary);text-decoration:none;margin-top:8px}
+.stat-link:hover{color:var(--primary-dark);}
+.up{color:var(--primary)}.down{color:#ef4444}
+
+/* ─── PANEL ──────────────────────────────────────────────────────────────── */
+.panel-head{
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.panel-title{
+  font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--text-dark);
+}
+.panel-sub{font-size:.78rem;color:var(--text-light);margin-top:2px}
+
+/* ─── TABS ───────────────────────────────────────────────────────────────── */
+.tabs{
+  display:flex;gap:3px;background:var(--border-light);
+  border-radius:var(--r-md);padding:3px;
+}
+.tab{
+  padding:5px 14px;border-radius:var(--r-sm);font-size:.77rem;font-weight:600;
+  border:none;background:none;cursor:pointer;color:var(--text-light);
+  transition:var(--ease);font-family:'Inter',sans-serif;
+}
+.tab.active{
+  background:var(--card);color:var(--primary);
+  box-shadow:var(--shadow-sm);
+}
+
+/* ─── REQUEST ITEM ───────────────────────────────────────────────────────── */
+.req-item{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--border-light);
+  transition:background .15s;
+  animation:slideIn .28s ease;
+}
+.req-item:last-child{border-bottom:none}
+.req-item:hover{background:var(--border-light)}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+
+.req-icon{
+  width:44px;height:44px;border-radius:var(--r-md);
+  background:rgba(46,125,50,.08);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0;
+}
+.req-info{flex:1;min-width:0}
+.req-name{font-size:.9rem;font-weight:600;color:var(--text-dark);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req-name.clickable{
+  cursor:pointer;
+  color:var(--text-dark);
+  position:relative;
+  transition:var(--ease);
+}
+.req-name.clickable::after{
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:-2px;
+  width:100%;
+  height:2px;
+  background:linear-gradient(90deg,#fb923c,#f59e0b,#facc15);
+  transform:scaleX(.35);
+  transform-origin:left;
+  opacity:.75;
+  transition:var(--ease);
+}
+.req-name.clickable:hover{color:var(--primary-dark);letter-spacing:.01em}
+.req-name.clickable:hover::after{transform:scaleX(1);opacity:1}
+body.dark-mode .req-name.clickable{
+  color:#ffffff;
+  text-shadow:0 1px 3px rgba(0,0,0,.28);
+}
+body.dark-mode .req-name.clickable:hover{color:#ffffff}
+.req-meta{font-size:.76rem;color:var(--text-light);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.req-meta span{display:flex;align-items:center;gap:3px}
+.req-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0;align-items:flex-end}
+
+.location-link{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 12px;
+  border-radius:999px;background:rgba(46,125,50,.1);color:var(--primary);
+  text-decoration:none;font-size:.76rem;font-weight:700;border:1.5px solid rgba(46,125,50,.18);
+}
+.location-link:hover{background:var(--primary);color:#fff;border-color:rgba(46,125,50,.3);}
+
+.ab{
+  padding:7px 14px;border-radius:var(--r-sm);
+  font-size:.77rem;font-weight:700;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+  transition:var(--ease);font-family:'Inter',sans-serif;
+}
+.ab-accept{background:rgba(46,125,50,.1);color:var(--primary);border:1.5px solid rgba(46,125,50,.2)}
+.ab-accept:hover{background:var(--primary);color:#fff;box-shadow:var(--shadow-green)}
+.ab-reject{background:rgba(239,68,68,.08);color:#ef4444;border:1.5px solid rgba(239,68,68,.18)}
+.ab-reject:hover{background:#ef4444;color:#fff}
+
+.status-pill{
+  padding:4px 11px;border-radius:var(--r-full);
+  font-size:.71rem;font-weight:700;letter-spacing:.04em;
+}
+.sp-accepted{background:rgba(46,125,50,.1);color:var(--primary)}
+.sp-rejected{background:rgba(239,68,68,.08);color:#ef4444}
+.sp-pending{background:rgba(255,202,40,.15);color:#b45309}
+
+/* ─── ACTIVITY ───────────────────────────────────────────────────────────── */
+.feed-item{
+  display:flex;gap:12px;padding:12px 20px;
+  border-bottom:1px solid var(--border-light);font-size:.83rem;align-items:flex-start;
+}
+.feed-item:last-child{border-bottom:none}
+.fdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.dg{background:var(--primary)}.do{background:#f59e0b}.db{background:#3b82f6}.dr{background:#ef4444}
+.ftext{flex:1;line-height:1.5;color:var(--text-med)}
+.ftext strong{color:var(--text-dark)}
+.ftime{font-size:.71rem;color:var(--text-light);margin-top:2px}
+
+.live-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.72rem;font-weight:700;color:var(--primary);letter-spacing:.06em;
+}
+.live-badge::before{
+  content:'';width:7px;height:7px;border-radius:50%;
+  background:var(--primary);animation:pulse 1.8s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ─── EMPTY STATE ────────────────────────────────────────────────────────── */
+.empty{padding:40px 20px;text-align:center;color:var(--text-light)}
+.empty i{font-size:2rem;margin-bottom:10px;display:block}
+.empty p{font-size:.9rem}
+
+/* ─── TOAST ──────────────────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-md);padding:13px 18px;
+  font-size:.88rem;display:flex;align-items:center;gap:10px;
+  z-index:9999;transform:translateY(90px);opacity:0;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  min-width:230px;max-width:340px;box-shadow:var(--shadow-lg);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-left:4px solid var(--primary)}
+.toast.error{border-left:4px solid #ef4444}
+.toast.info{border-left:4px solid #3b82f6}
+.ti{font-size:1rem}
+.toast.success .ti{color:var(--primary)}.toast.error .ti{color:#ef4444}.toast.info .ti{color:#3b82f6}
+
+.alert-prefs{padding:16px 20px 20px}
+.alert-pref{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--border-light);
+}
+.alert-pref:last-of-type{border-bottom:none}
+.alert-pref-copy{flex:1}
+.alert-pref-copy strong{display:block;font-size:.85rem;color:var(--text-dark);font-weight:700}
+.alert-pref-copy span{display:block;font-size:.76rem;color:var(--text-light);margin-top:2px}
+.switch{position:relative;display:inline-flex;width:48px;height:28px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.slider{
+  position:absolute;inset:0;cursor:pointer;border-radius:999px;
+  background:var(--border);transition:var(--ease);
+}
+.slider::before{
+  content:'';position:absolute;left:4px;top:4px;width:20px;height:20px;
+  border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.18);
+  transition:var(--ease);
+}
+.switch input:checked + .slider{background:var(--primary)}
+.switch input:checked + .slider::before{transform:translateX(20px)}
+.alert-note{
+  margin-top:12px;font-size:.74rem;color:var(--text-light);line-height:1.6;
+  background:var(--border-light);border-radius:var(--r-md);padding:10px 12px;
+}
+.ngo-alert-banner{
+  display:none;align-items:flex-start;justify-content:space-between;gap:14px;
+  padding:16px 18px;border-radius:var(--r-lg);
+  background:linear-gradient(135deg,rgba(46,125,50,.14),rgba(255,202,40,.2));
+  border:1px solid rgba(46,125,50,.16);box-shadow:var(--shadow-sm);
+}
+.ngo-alert-banner.show{display:flex;animation:slideIn .25s ease}
+.ngo-alert-banner strong{display:block;font-size:.95rem;color:var(--text-dark);margin-bottom:3px}
+.ngo-alert-banner p{font-size:.82rem;color:var(--text-med)}
+.ngo-alert-close{
+  border:none;background:none;color:var(--text-light);cursor:pointer;
+  font-size:1rem;line-height:1;padding:2px 4px;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){
+  .page-wrap{flex-direction:column;padding:16px}
+  .sidebar{width:100%;position:static}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  #chat-overlay{width:calc(100vw - 32px);right:16px}
+  #chat-toggle{right:16px;bottom:16px;padding:12px 18px}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .req-item{flex-wrap:wrap}
+  .req-actions{width:100%;justify-content:flex-end}
+  .topbar{padding:0 16px}
+}
+#avatarInput{display:none}
+</style>
+</head>
+<body>
+<!-- TOPBAR -->
+<nav class="topbar">
+    <a class="brand" href="index.html" title="FeedLink Home">
+   <svg width="200" height="50" viewBox="0 0 200 50">
+
+  <defs>
+    <!-- 3D Plate Gradients -->
+    <radialGradient id="plateOuter" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#d9d9d9"/>
+    </radialGradient>
+
+    <radialGradient id="plateInner" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ececec"/>
+    </radialGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5"
+                    flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow -->
+    <marker id="arrow"
+            markerWidth="5"
+            markerHeight="5"
+            refX="4"
+            refY="2.5"
+            orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT TEXT (closer) -->
+  <text x="78" y="32"
+        text-anchor="end"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffb300">
+    Second
+  </text>
+
+  <!-- CENTER -->
+  <g transform="translate(100,25)">
+
+    <!-- Rotating Arrows -->
+    <g>
+      <path d="M 0 -20 A 20 20 0 0 1 20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <path d="M 0 20 A 20 20 0 0 1 -20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="360"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </g>
+
+    <!-- Plate Base -->
+    <circle cx="0" cy="0" r="11"
+            fill="url(#plateOuter)"
+            stroke="#cfcfcf"
+            stroke-width="0.8"
+            filter="url(#shadow)"/>
+
+    <!-- Rim -->
+    <circle cx="0" cy="0" r="9"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.8"/>
+
+    <!-- Inner Bowl -->
+    <circle cx="0" cy="0" r="6.5"
+            fill="url(#plateInner)"
+            stroke="#e0e0e0"
+            stroke-width="0.5"/>
+
+  </g>
+
+  <!-- RIGHT TEXT (closer) -->
+  <text x="122" y="32"
+        text-anchor="start"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffffff">
+    Serve
+  </text>
+
+</svg>
+  </a>
+  <div class="topbar-right">
+    <span style="font-size:.88rem;font-weight:600;opacity:.9" id="topName">NGO Dashboard</span>
+    <button class="icon-btn" onclick="toggleDark()" title="Toggle dark mode">
+      <i id="darkIcon" class="fas fa-moon"></i>
+    </button>
+    <a href="mailto:team.yukti.official@gmail.com" class="cta-btn">
+      <i class="fas fa-plus"></i> Add Report
+    </a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <!-- ══ SIDEBAR ════════════════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <!-- PROFILE CARD -->
+    <div class="card">
+      <div class="profile-cover">
+        <div class="photo-wrap">
+          <div class="profile-photo" id="profilePhoto" onclick="document.getElementById('avatarInput').click()" title="Click to change photo">
+            <span id="avatarInitial">🏢</span>
+            <img id="avatarImg" src="" alt="NGO" style="display:none"/>
+            <div class="photo-overlay"><i class="fas fa-camera"></i> Change</div>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="avatarInput" accept="image/*">
+
+      <div class="profile-body">
+        <div class="profile-name" id="dispName">Helping Hands NGO</div>
+        <div class="profile-sub">NGO Partner • <span style="color:var(--primary)">Kolkata, WB</span></div>
+        <div class="verified-pill"><i class="fas fa-check-circle"></i> Verified NGO</div>
+        <div class="profile-stats">
+          <div class="ps"><span class="ps-val" id="psReq">24</span><span class="ps-lbl">Requests</span></div>
+          <div class="ps"><span class="ps-val" id="psAcc">12</span><span class="ps-lbl">Accepted</span></div>
+          <div class="ps"><span class="ps-val" id="psMeals">320</span><span class="ps-lbl">Meals</span></div>
+        </div>
+      </div>
+
+      <!-- VIEW MODE -->
+      <div id="viewMode">
+        <div class="sec-head">
+          <span class="sec-title">Profile Info</span>
+          <button class="edit-btn" onclick="enterEdit()"><i class="fas fa-pen"></i> Edit</button>
+        </div>
+        <div class="info-rows">
+          <div class="i-row"><i class="fas fa-building"></i><span class="i-val" id="vName">—</span></div>
+          <div class="i-row"><i class="fas fa-envelope"></i><span class="i-val" id="vEmail">—</span></div>
+          <div class="i-row"><i class="fas fa-phone"></i><span class="i-val" id="vPhone">—</span></div>
+          <div class="i-row"><i class="fas fa-map-marker-alt"></i><span class="i-val" id="vAddr">—</span></div>
+          <div class="i-row"><i class="fas fa-align-left"></i><span class="i-val" id="vDesc">—</span></div>
+        </div>
+      </div>
+
+      <!-- EDIT MODE -->
+      <div id="editMode" style="display:none">
+        <div class="sec-head">
+          <span class="sec-title">Edit Profile</span>
+          <button class="edit-btn" onclick="cancelEdit()" style="color:#ef4444"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+        <div class="profile-form">
+          <div class="fl-field">
+            <label>NGO / Organisation Name</label>
+            <input id="fName" type="text" placeholder="e.g. Helping Hands Foundation">
+          </div>
+          <div class="fl-field">
+            <label>Email <i class="fas fa-lock" style="font-size:.6rem;opacity:.6;margin-left:3px"></i></label>
+            <input id="fEmail" type="email" readonly>
+            <div class="lock-note"><i class="fas fa-lock"></i> Registered email — cannot be changed</div>
+          </div>
+          <div class="fl-field">
+            <label>Phone <i class="fas fa-lock" style="font-size:.6rem;opacity:.6;margin-left:3px"></i></label>
+            <input id="fPhone" type="tel" readonly>
+            <div class="lock-note"><i class="fas fa-lock"></i> Verified number — cannot be changed</div>
+          </div>
+          <div class="fl-field">
+            <label>Address / Service Area</label>
+            <input id="fAddr" type="text" placeholder="City, District, State">
+          </div>
+          <div class="fl-field">
+            <label>About your NGO</label>
+            <textarea id="fDesc" placeholder="Describe your mission, who you serve…"></textarea>
+          </div>
+          <button class="save-btn" id="saveBtn" onclick="saveProfile()">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GOAL -->
+    <div class="card">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Monthly Goal</div>
+          <div class="panel-sub">Meals distributed this month</div>
+        </div>
+      </div>
+      <div class="goal-body">
+        <div class="goal-row"><span>Progress</span><span class="pct" id="goalPct">—</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="goalBar" style="width:0%"></div></div>
+        <div class="goal-note" id="goalNote">Loading goal data…</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Alert Settings</div>
+          <div class="panel-sub">Choose how your NGO gets new food alerts</div>
+        </div>
+      </div>
+      <div class="alert-prefs">
+        <div class="alert-pref">
+          <div class="alert-pref-copy">
+            <strong>Website alerts</strong>
+            <span>Show instant alerts inside this dashboard.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="websiteAlertsToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="alert-pref">
+          <div class="alert-pref-copy">
+            <strong>Browser alerts</strong>
+            <span>Send desktop browser notifications when permission is allowed.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="browserAlertsToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="alert-pref">
+          <div class="alert-pref-copy">
+            <strong>Phone alerts</strong>
+            <span>Use mobile vibration on supported phones when a donation arrives.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="phoneAlertsToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="alert-note">
+          SMS and phone-call alerts still need backend services like Twilio or Firebase to reach real phone numbers.
+        </div>
+      </div>
+    </div>
+
+    <!-- NAV -->
+    <div class="card">
+      <div class="side-nav">
+        <a class="nav-link active" href="ngo-dashboard.html"><i class="fas fa-th-large"></i> Overview</a>
+        <a class="nav-link" href="find-ngo.html"><i class="fas fa-map-marker-alt"></i> Map View</a>
+        <a class="nav-link" href="chat.html" data-chat-toggle="true"><i class="fas fa-comments"></i> Messages</a>
+        <a class="nav-link" href="mailto:secondserveoriginal@gmail.com"><i class="fas fa-file-alt"></i>Impact Reports</a>
+        <button class="nav-link danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN ═════════════════════════════════════ -->
+  <div class="main">
+
+    <div class="ngo-alert-banner" id="ngoAlertBanner">
+      <div>
+        <strong id="ngoAlertBannerTitle">New food donation available</strong>
+        <p id="ngoAlertBannerText">A nearby donation is waiting for review.</p>
+      </div>
+      <button class="ngo-alert-close" type="button" onclick="dismissAlertBanner()" aria-label="Close alert">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card sc-green">
+        <div class="s-icon si-g"><i class="fas fa-inbox"></i></div>
+        <div class="s-val" id="statReq">—</div>
+        <div class="s-lbl">Pending Requests</div>
+      </div>
+      <div class="stat-card sc-orange">
+        <div class="s-icon si-o"><i class="fas fa-check-circle"></i></div>
+        <div class="s-val" id="statAcc">—</div>
+        <div class="s-lbl">Accepted Donations</div>
+      </div>
+      <div class="stat-card sc-blue">
+        <div class="s-icon si-b"><i class="fas fa-utensils"></i></div>
+        <div class="s-val" id="statMeals2">—</div>
+        <div class="s-lbl">Meals Distributed</div>
+      </div>
+      <div class="stat-card sc-purple">
+        <div class="s-icon si-p"><i class="fas fa-users"></i></div>
+        <div class="s-val" id="statVol">—</div>
+        <div class="s-lbl">Active Volunteers</div>
+        <a class="stat-link" href="volunteer.html">Contact volunteers</a>
+      </div>
+    </div>
+
+    <!-- REQUESTS -->
+    <div class="card">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Donation Requests</div>
+          <div class="panel-sub">Review and approve incoming food donations</div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" onclick="filterReq('all',this)">All</button>
+          <button class="tab" onclick="filterReq('pending',this)">Pending</button>
+          <button class="tab" onclick="filterReq('accepted',this)">Accepted</button>
+        </div>
+      </div>
+      <div id="reqList">
+        <div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>Loading requests…</p></div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY -->
+    <div class="card">
+      <div class="panel-head">
+        <div><div class="panel-title">Activity Feed</div><div class="panel-sub">Real-time updates</div></div>
+        <div class="live-badge">LIVE</div>
+      </div>
+      <div id="feed">
+      <div class="feed-item"><div class="fdot dg"></div><div><div class="ftext">Loading activity…</div><div class="ftime">Just now</div></div></div>
+    </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /page-wrap -->
+
+<button id="chat-toggle" type="button" aria-controls="chat-overlay" aria-expanded="false">
+  <i class="fas fa-comments"></i> Chat
+</button>
+
+<div id="chat-overlay" aria-hidden="true">
+  <iframe src="chat.html" title="Chat popup"></iframe>
+</div>
+
+<div class="toast" id="toast"><span class="ti" id="ti"></span><span id="tm"></span></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   FeedLink NGO Dashboard — backend-ready
+   API: fetchAPI() → falls back to sample data gracefully
+   Profile: saves locally + PATCH /users/profile
+   Avatar: saves locally (base64) + POST /users/avatar (multipart)
+   ════════════════════════════════════════════════════════════════════════ */
+
+const BASE = (typeof API_CONFIG !== 'undefined' ? API_CONFIG.BASE_URL : null)
+           || localStorage.getItem('apiBaseUrl') || 'http://localhost:5000/api';
+const TK   = (typeof API_CONFIG !== 'undefined' ? API_CONFIG.TOKEN_KEY : null) || 'feedlink_auth_token';
+const UK   = (typeof API_CONFIG !== 'undefined' ? API_CONFIG.USER_KEY  : null) || 'feedlink_user_data';
+const ALERT_CHANNEL_KEY = 'secondserve_ngo_alert';
+const ALERT_PREFS_KEY = 'secondserve_ngo_alert_prefs';
+
+const getToken = () => sessionStorage.getItem(TK);
+const getUser  = () => { try{ return JSON.parse(sessionStorage.getItem(UK)); }catch(e){ return null; } };
+const clearAuthState = () => {
+  sessionStorage.removeItem(TK);
+  sessionStorage.removeItem(UK);
+  sessionStorage.removeItem('userType');
+  sessionStorage.removeItem('userName');
+  sessionStorage.removeItem('userEmail');
+};
+
+function enforceDashboardAccess(expectedType){
+  const token=getToken();
+  const userType=(getUser()||{}).userType || sessionStorage.getItem('userType');
+  if(!token){
+    location.href='login.html';
+    return false;
+  }
+  if(userType && userType!==expectedType){
+    location.href='index.html';
+    return false;
+  }
+  return true;
+}
+
+async function fetchAPI(path, opts={}){
+  const h = {'Content-Type':'application/json','Accept':'application/json',...(opts.headers||{})};
+  const tk = getToken(); if(tk) h.Authorization = `Bearer ${tk}`;
+  const r = await fetch(BASE+path,{...opts,headers:h});
+  if(r.status===401 || r.status===403){
+    const err=new Error('Unauthorized');
+    err.isAuthError=true;
+    clearAuthState();
+    location.href='login.html';
+    throw err;
+  }
+  if(!r.ok){ const t=await r.text(); throw new Error(t||r.statusText); }
+  return r.status===204?null:r.json();
+}
+
+async function withFallback(request, fallback){
+  try{
+    return await request;
+  }catch(error){
+    if(error && error.isAuthError) throw error;
+    return fallback;
+  }
+}
+
+function setupChatPopup(){
+  const toggle = document.getElementById('chat-toggle');
+  const overlay = document.getElementById('chat-overlay');
+  if(!toggle || !overlay) return;
+
+  const openChat = (forceOpen) => {
+    const isOpen = overlay.style.display === 'block';
+    const nextOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
+
+    overlay.style.display = nextOpen ? 'block' : 'none';
+    overlay.setAttribute('aria-hidden', String(!nextOpen));
+    toggle.classList.toggle('open', nextOpen);
+    toggle.setAttribute('aria-expanded', String(nextOpen));
+
+    if(nextOpen){
+      const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      const chatIframe = overlay.querySelector('iframe');
+      if(chatIframe && chatIframe.contentWindow){
+        chatIframe.contentWindow.postMessage({ type: 'setTheme', theme: currentTheme }, '*');
+      }
+    }
+  };
+
+  toggle.addEventListener('click', () => openChat());
+
+  document.querySelectorAll('[data-chat-toggle="true"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      openChat(true);
+    });
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if(event.key === 'Escape'){
+      openChat(false);
+    }
+  });
+
+  window.addEventListener('message', function(event){
+    if(event.data === 'closeFeedlinkChat'){
+      openChat(false);
+      return;
+    }
+
+    if(event.data && event.data.type === 'themeChange'){
+      const newTheme = event.data.theme;
+      const isDark = newTheme === 'dark';
+      document.body.classList.toggle('dark-mode', isDark);
+      localStorage.setItem('feedlink_dark', isDark ? '1' : '0');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      const darkIcon = document.getElementById('darkIcon');
+      if(darkIcon){
+        darkIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      }
+    }
+  });
+}
+
+/* ── SAMPLE FALLBACK ── */
+const SAMPLE = {
+  stats:{requests:0,accepted:0,meals:0,volunteers:0,mealsGoal:500},
+  requests:[]
+};
+
+/* ── STATE ── */
+let allReqs=[], reqFilter='all';
+let seenRequestIds=new Set();
+let hasLoadedRequests=false;
+
+/* ── TOAST ── */
+function getAlertPrefs(){
+  const stored=JSON.parse(localStorage.getItem(ALERT_PREFS_KEY)||'{}');
+  return {
+    website: stored.website !== false,
+    browser: stored.browser === true,
+    phone: stored.phone !== false
+  };
+}
+
+function saveAlertPrefs(nextPrefs){
+  localStorage.setItem(ALERT_PREFS_KEY,JSON.stringify(nextPrefs));
+}
+
+function syncAlertToggles(){
+  const prefs=getAlertPrefs();
+  const website=document.getElementById('websiteAlertsToggle');
+  const browser=document.getElementById('browserAlertsToggle');
+  const phone=document.getElementById('phoneAlertsToggle');
+  if(website) website.checked=prefs.website;
+  if(browser) browser.checked=prefs.browser;
+  if(phone) phone.checked=prefs.phone;
+}
+
+function dismissAlertBanner(){
+  document.getElementById('ngoAlertBanner').classList.remove('show');
+}
+
+function showAlertBanner(title,text){
+  document.getElementById('ngoAlertBannerTitle').textContent=title;
+  document.getElementById('ngoAlertBannerText').textContent=text;
+  const banner=document.getElementById('ngoAlertBanner');
+  banner.classList.add('show');
+  clearTimeout(showAlertBanner._timer);
+  showAlertBanner._timer=setTimeout(()=>banner.classList.remove('show'),7000);
+}
+
+function vibratePhoneAlert(){
+  if(typeof navigator.vibrate==='function'){
+    navigator.vibrate([250,120,250,120,350]);
+  }
+}
+
+function sendBrowserAlert(title,body){
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  const notification=new Notification(title,{body,tag:'secondserve-food-alert'});
+  notification.onclick=()=>{
+    window.focus();
+    notification.close();
+  };
+}
+
+async function ensureBrowserAlertPermission(){
+  if(!('Notification' in window)) return false;
+  if(Notification.permission==='granted') return true;
+  if(Notification.permission==='denied') return false;
+  const result=await Notification.requestPermission();
+  return result==='granted';
+}
+
+function buildAlertMessage(payload){
+  const foodName=payload.foodName||payload.title||'Food donation';
+  const qty=payload.quantity&&payload.unit ? `${payload.quantity} ${payload.unit}` : (payload.items || 'Fresh food available');
+  const city=payload.city || payload.distance || 'Nearby area';
+  return {
+    title:`New donation: ${foodName}`,
+    text:`${qty} ready for pickup in ${city}.`
+  };
+}
+
+function handleNgoAlert(payload){
+  const prefs=getAlertPrefs();
+  const message=buildAlertMessage(payload);
+  addFeedItem(`New donation: <strong>${payload.foodName||payload.title||'Food donation'}</strong>`,'do','Just now');
+
+  if(prefs.website){
+    showAlertBanner(message.title,message.text);
+    toast(`${message.title} ready for review.`,'info');
+  }
+  if(prefs.browser){
+    sendBrowserAlert(message.title,message.text);
+  }
+  if(prefs.phone){
+    vibratePhoneAlert();
+  }
+}
+
+function normalizeRequest(req){
+  const donorName = req.donor_name || req.donor?.full_name || req.donations?.donor_name || 'Nearby donor';
+  const donorId = req.donor?.id || req.donor_id || req.donations?.donor_id || null;
+  const pickupAddress = [
+    req.pickupAddress,
+    req.donationAddress,
+    req.donations?.address,
+    req.address,
+    req.location,
+    req.city
+  ].find(value => value && value !== 'Location not available') || 'Location not available';
+  const donorPhone = req.pickupPhone || req.donationPhone || req.donations?.contact_phone || req.donor?.phone || req.requester?.phone || '';
+  const lat = req.pickupLatitude || req.donationLatitude || req.donations?.latitude || req.latitude || null;
+  const lng = req.pickupLongitude || req.donationLongitude || req.donations?.longitude || req.longitude || null;
+  const locationQuery = lat && lng
+    ? `${lat},${lng}`
+    : pickupAddress;
+  const locationUrl = (lat && lng) || pickupAddress
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}`
+    : '';
+
+  return {
+    ...req,
+    id:req.id ?? req._id ?? `${req.foodName || req.sourceName || 'donation'}-${req.created_at || Date.now()}`,
+    sourceName: donorName,
+    donorName,
+    donorId,
+    donorPhone,
+    pickupAddress,
+    pickupLatitude: lat,
+    pickupLongitude: lng,
+    pickupLocationUrl: locationUrl,
+    items:req.items || ((req.quantity && req.unit) ? `${req.quantity} ${req.unit}` : req.quantity || 'Food available'),
+    distance:req.distance || req.city || req.address || 'Nearby',
+    status:req.status || 'pending',
+    foodName:req.foodName || req.title || req.sourceName || 'Food donation',
+    city:req.city || req.distance || 'Nearby',
+    unit:req.unit || '',
+    quantity:req.quantity || ''
+  };
+}
+
+function processNewRequests(nextReqs){
+  const normalized=(Array.isArray(nextReqs)?nextReqs:[]).map(normalizeRequest);
+  const nextIds=new Set(normalized.map(r=>String(r.id)));
+
+  const changes=[];
+  if(hasLoadedRequests){
+    const prevMap=new Map(allReqs.map(r=>[String(r.id),r]));
+    normalized.forEach(r=>{
+      const old=prevMap.get(String(r.id));
+      if(old && old.status!==r.status){
+        changes.push({old,r});
+      }
+    });
+  }
+
+  const newlyAdded=hasLoadedRequests
+    ? normalized.filter(r=>!seenRequestIds.has(String(r.id)) && r.status==='pending')
+    : [];
+
+  allReqs=normalized;
+  seenRequestIds=nextIds;
+  hasLoadedRequests=true;
+  updateCounts();
+  renderReqs();
+  renderActivityFeed(normalized);
+
+  newlyAdded.forEach((req)=>handleNgoAlert(req));
+
+  changes.forEach(({old,r})=>{
+    const actor = r.donorName || r.sourceName || 'Donor';
+    if(r.status==='accepted'){
+      addFeedItem(`<strong>${actor}</strong> accepted your request`, 'dg', 'Just now');
+      toast(`${actor} accepted your request`,'success');
+    } else if(r.status==='rejected'){
+      addFeedItem(`<strong>${actor}</strong> rejected your request`, 'dr', 'Just now');
+      toast(`${actor} rejected your request`,'error');
+    }
+  });
+}
+
+function setupAlertSettings(){
+  syncAlertToggles();
+
+  document.getElementById('websiteAlertsToggle').addEventListener('change',(event)=>{
+    const prefs={...getAlertPrefs(),website:event.target.checked};
+    saveAlertPrefs(prefs);
+    toast(`Website alerts ${prefs.website?'enabled':'disabled'}.`,'info');
+  });
+
+  document.getElementById('browserAlertsToggle').addEventListener('change',async(event)=>{
+    const enabled=event.target.checked;
+    if(enabled){
+      const granted=await ensureBrowserAlertPermission();
+      if(!granted){
+        event.target.checked=false;
+        saveAlertPrefs({...getAlertPrefs(),browser:false});
+        toast('Browser notification permission was not granted.','error');
+        return;
+      }
+    }
+    saveAlertPrefs({...getAlertPrefs(),browser:enabled});
+    toast(`Browser alerts ${enabled?'enabled':'disabled'}.`,'info');
+  });
+
+  document.getElementById('phoneAlertsToggle').addEventListener('change',(event)=>{
+    const prefs={...getAlertPrefs(),phone:event.target.checked};
+    saveAlertPrefs(prefs);
+    toast(`Phone vibration alerts ${prefs.phone?'enabled':'disabled'}.`,'info');
+  });
+
+  window.addEventListener('storage',(event)=>{
+    if(event.key===ALERT_CHANNEL_KEY && event.newValue){
+      try{
+        handleNgoAlert(JSON.parse(event.newValue));
+      }catch(err){}
+    }
+    if(event.key===ALERT_PREFS_KEY){
+      syncAlertToggles();
+    }
+  });
+}
+
+let _tt;
+function toast(msg,type='success'){
+  const el=document.getElementById('toast');
+  const icons={success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle'};
+  el.className=`toast ${type} show`;
+  document.getElementById('ti').className=`ti fas ${icons[type]}`;
+  document.getElementById('tm').textContent=msg;
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+/* ── DARK MODE ── */
+function toggleDark(){
+  document.body.classList.toggle('dark-mode');
+  const on=document.body.classList.contains('dark-mode');
+  localStorage.setItem('feedlink_dark',on?'1':'0');
+  document.getElementById('darkIcon').className=on?'fas fa-sun':'fas fa-moon';
+}
+function initDark(){
+  if(localStorage.getItem('feedlink_dark')==='1'){
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkIcon').className='fas fa-sun';
+  }
+}
+
+/* ── PROFILE HELPERS ── */
+function mergedProfile(){
+  const user=getUser()||{};
+  const local=JSON.parse(localStorage.getItem('ngoProfile')||'{}');
+  return {...user,...local};
+}
+
+function getProfileLocation(profile){
+  return (profile.address||profile.city||profile.location||'').trim();
+}
+
+function loadProfileUI(){
+  const p=mergedProfile();
+  const name=p.name||p.full_name||p.orgName||'Helping Hands NGO';
+  document.getElementById('dispName').textContent=name;
+  document.getElementById('topName').textContent=name;
+  document.getElementById('vName').textContent=name;
+  document.getElementById('vEmail').textContent=p.email||'—';
+  document.getElementById('vPhone').textContent=p.phone||'—';
+  document.getElementById('vAddr').textContent=getProfileLocation(p)||'—';
+  document.getElementById('vDesc').textContent=p.bio||p.desc||'—';
+  // Avatar
+  if(p.avatar){
+    const img=document.getElementById('avatarImg');
+    img.src=p.avatar;img.style.display='block';
+    document.getElementById('avatarInitial').style.display='none';
+  }
+}
+
+function enterEdit(){
+  const p=mergedProfile();
+  document.getElementById('fName').value=p.name||p.orgName||'';
+  document.getElementById('fEmail').value=p.email||'';
+  document.getElementById('fPhone').value=p.phone||'';
+  document.getElementById('fAddr').value=getProfileLocation(p);
+  document.getElementById('fDesc').value=p.bio||p.desc||'';
+  document.getElementById('viewMode').style.display='none';
+  document.getElementById('editMode').style.display='block';
+}
+
+function cancelEdit(){
+  document.getElementById('editMode').style.display='none';
+  document.getElementById('viewMode').style.display='block';
+}
+
+async function saveProfile(){
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';
+  const fullNameValue=document.getElementById('fName').value.trim();
+  const addressValue=document.getElementById('fAddr').value.trim();
+  const bioValue=document.getElementById('fDesc').value.trim();
+  const phoneValue=document.getElementById('fPhone').value.trim();
+  const payload={
+    fullName:fullNameValue,
+    phone:phoneValue,
+    address:addressValue,
+    bio:bioValue,
+  };
+  // local save
+  const loc=JSON.parse(localStorage.getItem('ngoProfile')||'{}');
+  localStorage.setItem('ngoProfile',JSON.stringify({
+    ...loc,
+    full_name:fullNameValue,
+    name:fullNameValue,
+    phone:phoneValue,
+    address:addressValue,
+    city:addressValue,
+    location:addressValue,
+    bio:bioValue,
+    desc:bioValue
+  }));
+  const u=getUser()||{};
+  sessionStorage.setItem(UK,JSON.stringify({...u,...payload,full_name:fullNameValue,name:fullNameValue,city:addressValue,location:addressValue}));
+  // backend
+  try{
+    const updated=await fetchAPI('/users/profile',{method:'PUT',body:JSON.stringify(payload)});
+    if(updated && updated.user){
+      const fresh={...updated.user,name:updated.user.full_name||fullNameValue,city:updated.user.address||addressValue,location:updated.user.address||addressValue};
+      const prev=JSON.parse(localStorage.getItem('ngoProfile')||'{}');
+      localStorage.setItem('ngoProfile',JSON.stringify({...prev,...fresh}));
+      sessionStorage.setItem(UK,JSON.stringify({...getUser(),...fresh}));
+      if(fresh.full_name){
+        sessionStorage.setItem('userName',fresh.full_name);
+      }
+    }
+    toast('Profile updated successfully!','success');
+  }catch(e){ toast('Saved locally (connect to sync)','info'); }
+  loadProfileUI();
+  cancelEdit();
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> Save Changes';
+}
+
+/* ── AVATAR UPLOAD ── */
+document.getElementById('avatarInput').addEventListener('change',async function(){
+  const file=this.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const data=e.target.result;
+    document.getElementById('avatarImg').src=data;
+    document.getElementById('avatarImg').style.display='block';
+    document.getElementById('avatarInitial').style.display='none';
+    const loc=JSON.parse(localStorage.getItem('ngoProfile')||'{}');
+    loc.avatar=data;localStorage.setItem('ngoProfile',JSON.stringify(loc));
+    try{
+      const fd=new FormData();fd.append('avatar',file);
+      const tk=getToken();
+      const res=await fetch(BASE+'/users/avatar',{method:'POST',headers:tk?{Authorization:`Bearer ${tk}`}:{},body:fd});
+      if(res.ok){const d=await res.json();if(d.url){loc.avatar=d.url;localStorage.setItem('ngoProfile',JSON.stringify(loc));}}
+    }catch(err){}
+    toast('Profile photo updated!','success');
+  };
+  reader.readAsDataURL(file);
+});
+
+/* ── REQUESTS ── */
+function filterReq(f,btn){
+  reqFilter=f;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderReqs();
+}
+
+function renderReqs(){
+  const cont=document.getElementById('reqList');
+  const list=reqFilter==='all'?allReqs:allReqs.filter(r=>r.status===reqFilter);
+  if(!list.length){
+    cont.innerHTML=`<div class="empty"><i class="fas fa-inbox"></i><p>No ${reqFilter==='all'?'':reqFilter} requests</p></div>`;
+    return;
+  }
+  cont.innerHTML='';
+  list.forEach(r=>{
+    const el=document.createElement('div');
+    el.className='req-item';
+    const pend=r.status==='pending';
+    const locationLabel = r.pickupAddress && r.pickupAddress !== 'Location not available' ? r.pickupAddress : r.distance || 'Unknown location';
+    const hasLocation = !!((r.pickupLatitude && r.pickupLongitude) || (r.pickupAddress && r.pickupAddress !== 'Location not available'));
+    const showLocation = (r.status==='accepted' || r.status==='completed') && hasLocation;
+    const addressLine = r.pickupAddress && r.pickupAddress !== 'Location not available'
+      ? `<div class="req-meta"><span><i class="fas fa-map-marker-alt"></i><strong>Pickup address:</strong> ${r.pickupAddress}</span></div>`
+      : '';
+    const contactLine = (r.status === 'accepted' || r.status === 'completed') && r.donorPhone ? `<div class="req-meta"><span><i class="fas fa-phone"></i><strong>Contact:</strong> ${r.donorPhone}</span></div>` : '';
+    const donorName = r.donorName||r.sourceName||r.title||'Unknown donor';
+    const donorNameClass = r.donorId ? 'req-name clickable' : 'req-name';
+    const donorNameAction = r.donorId ? `onclick="openViewerProfile('${r.donorId}')" title="View donor profile"` : '';
+    el.innerHTML=`
+      <div class="req-icon">${r.emoji||'📦'}</div>
+      <div class="req-info">
+        <div class="${donorNameClass}" ${donorNameAction}>${donorName}</div>
+        <div class="req-meta">
+          <span><i class="fas fa-box-open"></i>${r.items||'—'}</span>
+          <span><i class="fas fa-location-dot"></i>${locationLabel}</span>
+        </div>
+        ${addressLine}
+        ${contactLine}
+      </div>
+      <div class="req-actions">
+        ${pend ? `<span class="status-pill sp-pending">Pending (waiting for donor response)</span>` : `<span class="status-pill sp-${r.status}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>`}
+        ${showLocation ? `<a class="location-link" href="${r.pickupLocationUrl}" target="_blank" rel="noopener noreferrer">View location</a>` : ''}
+      </div>`;
+    cont.appendChild(el);
+  });
+}
+
+function openViewerProfile(userId){
+  if(!userId) return;
+  location.href='viewer-dashboard.html?userId='+encodeURIComponent(userId);
+}
+
+function updateCounts(){
+  const pend=allReqs.filter(r=>r.status==='pending').length;
+  const acc=allReqs.filter(r=>r.status==='accepted').length;
+  document.getElementById('statReq').textContent=pend;
+  document.getElementById('statAcc').textContent=acc;
+  document.getElementById('psReq').textContent=pend;
+  document.getElementById('psAcc').textContent=acc;
+}
+
+async function acceptReq(id){
+  const r=allReqs.find(x=>x.id===id);
+  if(!r||r.status!=='pending')return;
+  r.status='accepted';updateCounts();renderReqs();
+  toast('Donation accepted!','success');
+  try{await fetchAPI(`/pickups/${id}/accept`,{method:'PUT'});}catch(e){console.warn(e);}
+  addFeedItem(`Donation request from <strong>${r.sourceName}</strong> accepted`,'dg','Just now');
+}
+
+async function rejectReq(id){
+  const r=allReqs.find(x=>x.id===id);
+  if(!r||r.status!=='pending')return;
+  r.status='rejected';updateCounts();renderReqs();
+  toast('Request declined.','error');
+  try{await fetchAPI(`/pickups/${id}/reject`,{method:'PUT'});}catch(e){console.warn(e);}
+}
+
+
+function addFeedItem(text,dotCls,time){
+  const feed=document.getElementById('feed');
+  const el=document.createElement('div');
+  el.className='feed-item';
+  el.style.animation='slideIn .3s ease';
+  el.innerHTML=`<div class="fdot ${dotCls}"></div><div><div class="ftext">${text}</div><div class="ftime">${time}</div></div>`;
+  feed.insertBefore(el,feed.firstChild);
+}
+
+function formatTimeAgo(iso){
+  if(!iso) return 'Just now';
+  const d=new Date(iso);
+  if(isNaN(d)) return 'Unknown';
+  const diff=(Date.now()-d.getTime())/1000;
+  if(diff<60) return 'Just now';
+  if(diff<3600) return `${Math.floor(diff/60)} min ago`;
+  if(diff<86400) return `${Math.floor(diff/3600)} hour${Math.floor(diff/3600)>1?'s':''} ago`;
+  return `${Math.floor(diff/86400)} day${Math.floor(diff/86400)>1?'s':''} ago`;
+}
+
+function renderActivityFeed(requests){
+  const feed=document.getElementById('feed');
+  if(!Array.isArray(requests)|| !requests.length){
+    feed.innerHTML='<div class="empty"><i class="fas fa-inbox"></i><p>No activity yet</p></div>';
+    return;
+  }
+
+  const sorted=requests.slice().sort((a,b)=>{
+    const ta=new Date(a.created_at||a.updated_at||Date.now()).getTime();
+    const tb=new Date(b.created_at||b.updated_at||Date.now()).getTime();
+    return tb-ta;
+  }).slice(0,6);
+
+  feed.innerHTML='';
+  sorted.forEach(r=>{
+    const actor=r.donorName||r.sourceName||r.donor_name||r.requester_name||'Someone';
+    const item=r.items||r.foodName||'food donation';
+    let text='';
+    let dot='dg';
+
+    if(r.status==='pending') { text=`New request from <strong>${actor}</strong>: ${item}`; dot='do'; }
+    else if(r.status==='accepted') { text=`<strong>${actor}</strong> accepted your request`; dot='dg'; }
+    else if(r.status==='completed') { text=`<strong>${actor}</strong> completed your request`; dot='dg'; }
+    else if(r.status==='rejected') { text=`<strong>${actor}</strong> rejected your request`; dot='dr'; }
+    else { text=`<strong>${actor}</strong> is now ${r.status}`; dot='db'; }
+
+    const time=formatTimeAgo(r.updated_at||r.created_at);
+    feed.innerHTML += `<div class="feed-item"><div class="fdot ${dot}"></div><div><div class="ftext">${text}</div><div class="ftime">${time}</div></div></div>`;
+  });
+}
+
+/* ── DASHBOARD LOAD ── */
+async function loadDashboard(){
+  try{
+      const stats=await withFallback(fetchAPI('/ngo/stats'), {requests:0,accepted:0,meals:0,volunteers:0,mealsGoal:500});
+    if(stats){
+      document.getElementById('statReq').textContent  =stats.requests  ??'—';
+      document.getElementById('statAcc').textContent  =stats.accepted  ??'—';
+      document.getElementById('statMeals2').textContent=stats.meals     ??'—';
+      document.getElementById('statVol').textContent  =stats.volunteers??'—';
+      document.getElementById('psReq').textContent    =stats.requests  ??'—';
+      document.getElementById('psReq').textContent    =stats.requests  ??'—';
+      document.getElementById('psMeals').textContent  =stats.meals     ??'—';
+      if(stats.mealsGoal){
+        const pct=Math.min(100,Math.round(stats.meals/stats.mealsGoal*100));
+        document.getElementById('goalPct').textContent=pct+'%';
+        document.getElementById('goalBar').style.width=pct+'%';
+        document.getElementById('goalNote').textContent=`${stats.meals} of ${stats.mealsGoal} meals distributed`;
+      }
+    }
+    const reqs=await withFallback(fetchAPI('/ngo/requests'), []);
+    processNewRequests(reqs);
+    // Hydrate profile from server
+    const ngo=await withFallback(fetchAPI('/users/profile'), null);
+    if(ngo){
+      const loc=JSON.parse(localStorage.getItem('ngoProfile')||'{}');
+      localStorage.setItem('ngoProfile',JSON.stringify({avatar:loc.avatar,...ngo}));
+      sessionStorage.setItem(UK,JSON.stringify({...getUser(),...ngo}));
+      // Update userName in localStorage if we got fresh data
+      if(ngo.full_name){
+        sessionStorage.setItem('userName', ngo.full_name);
+      }
+    }
+    loadProfileUI();
+  }catch(e){
+    if(e && e.isAuthError) return;
+    processNewRequests([]);
+    document.getElementById('statReq').textContent='—';
+    document.getElementById('statAcc').textContent='—';
+    document.getElementById('statMeals2').textContent='—';
+    document.getElementById('statVol').textContent='—';
+    document.getElementById('psReq').textContent='—';
+    document.getElementById('psAcc').textContent='—';
+    document.getElementById('psMeals').textContent='—';
+    loadProfileUI();
+  }
+}
+
+/* ── POLLING ── */
+let _poll;
+function startPoll(){if(_poll)return;_poll=setInterval(loadDashboard,15000);}
+function stopPoll(){if(_poll){clearInterval(_poll);_poll=null;}}
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)stopPoll();else{loadDashboard();startPoll();}
+});
+
+/* ── LOGOUT ── */
+async function logout(){
+  try{await fetchAPI('/auth/logout',{method:'POST'});}catch(e){}
+  clearAuthState();
+  location.href='login.html';
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  if(!enforceDashboardAccess('ngo')) return;
+  initDark();
+  setupAlertSettings();
+  setupChatPopup();
+  loadProfileUI();
+  loadDashboard().then(startPoll);
+});
+</script>
+</body>
+</html>

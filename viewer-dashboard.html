@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Profile | Second Serve</title>
+  <link rel="stylesheet" href="style/all.css" />
+  <link rel="stylesheet" href="style/viewer-dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <nav class="topbar">
+    <a href="index.html" class="brand" title="Second Serve Home">
+      <svg width="200" height="50" viewBox="0 0 200 50">
+        <defs>
+          <radialGradient id="viewerPlateOuter" cx="50%" cy="40%" r="65%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="70%" stop-color="#f2f2f2"/>
+            <stop offset="100%" stop-color="#d9d9d9"/>
+          </radialGradient>
+          <radialGradient id="viewerPlateInner" cx="50%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#ececec"/>
+          </radialGradient>
+          <filter id="viewerShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000" flood-opacity="0.3"/>
+          </filter>
+          <marker id="viewerArrow" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+            <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+          </marker>
+        </defs>
+
+        <text x="78" y="32" text-anchor="end" font-family="Poppins, sans-serif" font-weight="800" font-size="18" fill="#ffb300">Second</text>
+
+        <g transform="translate(100,25)">
+          <g>
+            <path d="M 0 -20 A 20 20 0 0 1 20 0" fill="none" stroke="#ffffff" stroke-width="1.3" marker-end="url(#viewerArrow)"/>
+            <path d="M 0 20 A 20 20 0 0 1 -20 0" fill="none" stroke="#ffffff" stroke-width="1.3" marker-end="url(#viewerArrow)"/>
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
+          </g>
+
+          <circle cx="0" cy="0" r="11" fill="url(#viewerPlateOuter)" stroke="#cfcfcf" stroke-width="0.8" filter="url(#viewerShadow)"/>
+          <circle cx="0" cy="0" r="9" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.8"/>
+          <circle cx="0" cy="0" r="6.5" fill="url(#viewerPlateInner)" stroke="#e0e0e0" stroke-width="0.5"/>
+        </g>
+
+        <text x="122" y="32" text-anchor="start" font-family="Poppins, sans-serif" font-weight="800" font-size="18" fill="#ffffff">Serve</text>
+      </svg>
+    </a>
+    <div class="topbar-right">
+      <span style="font-size:.88rem;font-weight:600;opacity:.9" id="topName">Profile Viewer</span>
+      <button class="icon-btn" id="darkBtn" title="Toggle dark mode"><i id="darkIcon" class="fas fa-moon"></i></button>
+      <button class="cta-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Back</button>
+    </div>
+  </nav>
+
+  <div class="page-wrap" id="viewerLayout">
+    <aside class="sidebar">
+      <div class="card">
+        <div class="profile-cover">
+          <div class="cover-tag cover-tag-left" id="profileTypeTag">PROFILE</div>
+          <div class="cover-tag cover-tag-right" id="verifiedTag" style="display:none"><i class="fas fa-shield-check"></i> Verified</div>
+          <div class="photo-wrap">
+            <div class="profile-photo" id="profilePhoto">
+              <span id="avatarInitial">U</span>
+              <img id="avatarImg" src="" alt="Profile" style="display:none"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-body">
+          <div class="profile-name" id="dispName">Loading profile...</div>
+          <div class="profile-sub" id="dispSub">Community member</div>
+          <div class="profile-badge-wrap" id="profileBadgeWrap" style="display:none;">
+            <div class="donor-badge-pill badge-none" id="viewerBadgePill">
+              <span class="badge-icon" id="viewerBadgeIcon">🔒</span>
+              <span id="viewerBadgeName">No Badge</span>
+            </div>
+            <div class="profile-badge-hint" id="donorBadgeHint">Donate to earn badges.</div>
+          </div>
+
+          <div class="profile-stats">
+            <div class="ps"><span class="ps-val" id="psA">0</span><span class="ps-lbl" id="psALabel">Metric A</span></div>
+            <div class="ps"><span class="ps-val" id="psB">0</span><span class="ps-lbl" id="psBLabel">Metric B</span></div>
+            <div class="ps"><span class="ps-val" id="psC">0</span><span class="ps-lbl" id="psCLabel">Metric C</span></div>
+          </div>
+        </div>
+
+        <div class="sec-head"><span class="sec-title">Profile Info</span></div>
+        <div class="info-rows">
+          <div class="i-row"><i class="fas fa-user"></i><span class="i-val" id="vName">-</span></div>
+          <div class="i-row"><i class="fas fa-envelope"></i><span class="i-val muted" id="vEmail">Hidden for privacy</span></div>
+          <div class="i-row"><i class="fas fa-phone"></i><span class="i-val muted" id="vPhone">Hidden for privacy</span></div>
+          <div class="i-row"><i class="fas fa-map-marker-alt"></i><span class="i-val" id="vAddr">-</span></div>
+          <div class="i-row"><i class="fas fa-calendar"></i><span class="i-val" id="vJoined">-</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">About</div>
+            <div class="panel-sub">Public profile summary</div>
+          </div>
+        </div>
+        <div class="about-body">
+          <p id="aboutText" class="about-text">No profile description available yet.</p>
+          <div id="websiteWrap" style="display:none;margin-top:10px">
+            <a id="websiteLink" class="location-link" href="#" target="_blank" rel="noopener noreferrer">Visit Website</a>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <main class="main">
+      <section class="card">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title" id="dashTitle">Profile Dashboard</div>
+            <div class="panel-sub" id="dashSubtitle">Public impact and contribution summary</div>
+          </div>
+          <span class="live-badge">Public View</span>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+      </section>
+
+      <section class="card">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Top Donors Leaderboard</div>
+            <div class="panel-sub">Top contributors and rank highlight</div>
+          </div>
+        </div>
+        <div class="leaderboard-scroll" id="topDonorsScroll">
+          <div id="topDonorsList" class="leaderboard-list">
+            <div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>Loading leaderboard...</p></div>
+          </div>
+        </div>
+        <div id="currentDonorSticky" class="leader-sticky" style="display:none"></div>
+      </section>
+
+      <section class="card">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Recent Activity</div>
+            <div class="panel-sub">Latest public timeline</div>
+          </div>
+        </div>
+        <div id="activityList">
+          <div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>Loading activity...</p></div>
+        </div>
+        </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"><span class="ti" id="ti"></span><span id="tm"></span></div>
+
+  <script src="script/api-config.js"></script>
+  <script src="script/api-utils.js"></script>
+  <script src="script/all.js"></script>
+  <script src="script/viewer-dashboard.js"></script>
+</body>
+</html>

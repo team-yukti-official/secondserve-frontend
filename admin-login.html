@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecondServe Admin Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 450px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 60px;
+            color: #667eea;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <i class="fas fa-lock"></i>
+        </div>
+        <h1>SecondServe Admin</h1>
+        <div class="subtitle">SecondServe Database Management System</div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Admin Username</label>
+                <input type="text" id="username" placeholder="Enter admin username" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-key"></i> Secret Key</label>
+                <input type="password" id="secretKey" placeholder="Enter secret key" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Access Dashboard
+            </button>
+        </form>
+
+        <div class="warning">
+            <strong>Restricted Access:</strong> This dashboard is for authorized database administrators only. Unauthorized access is prohibited.
+        </div>
+    </div>
+
+    <script src="script/env-config.js"></script>
+    <script>
+        const ADMIN_SESSION_KEY = 'feedlink_admin_session';
+        const API_BASE = window.ENV_CONFIG?.API_BASE_URL || 'http://localhost:5000/api';
+        const ADMIN_USERNAME = window.ENV_CONFIG?.ADMIN?.USERNAME || 'secondserveadmin@2025';
+        const ADMIN_HASH = window.ENV_CONFIG?.ADMIN?.CREDENTIAL_HASH || '';
+        const ADMIN_SESSION_TTL_MS = 60 * 60 * 1000;
+
+        function getAdminSession() {
+            try {
+                const raw = sessionStorage.getItem(ADMIN_SESSION_KEY);
+                const session = raw ? JSON.parse(raw) : null;
+                if (!session || !session.token || !session.expiresAt || session.expiresAt <= Date.now()) {
+                    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+                    return null;
+                }
+                return session;
+            } catch (error) {
+                sessionStorage.removeItem(ADMIN_SESSION_KEY);
+                return null;
+            }
+        }
+
+        async function hashCredentials(username, secretKey) {
+            const payload = new TextEncoder().encode(`${username}:${secretKey}`);
+            const digest = await crypto.subtle.digest('SHA-256', payload);
+            return Array.from(new Uint8Array(digest))
+                .map((byte) => byte.toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+        async function tryLocalAdminLogin(username, secretKey) {
+            const submittedHash = await hashCredentials(username, secretKey);
+            return username === ADMIN_USERNAME && submittedHash === ADMIN_HASH;
+        }
+
+        document.getElementById('adminLoginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const secretKey = document.getElementById('secretKey').value;
+            const submitButton = this.querySelector('.btn-login');
+            const errorDiv = document.getElementById('errorMessage');
+
+            errorDiv.style.display = 'none';
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, secretKey })
+                });
+
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload.success === false) {
+                    throw new Error(payload.error || 'Invalid credentials. Please try again.');
+                }
+
+                sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
+                    token: payload.token,
+                    username: payload.username || username,
+                    loginTime: new Date().toISOString(),
+                    expiresAt: payload.expiresAt || (Date.now() + ADMIN_SESSION_TTL_MS)
+                }));
+
+                window.location.href = 'admin-dashboard.html';
+            } catch (error) {
+                try {
+                    const localOk = await tryLocalAdminLogin(username, secretKey);
+                    if (localOk) {
+                        sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
+                            token: 'local-admin-token',
+                            localOnly: true,
+                            username,
+                            loginTime: new Date().toISOString(),
+                            expiresAt: Date.now() + ADMIN_SESSION_TTL_MS
+                        }));
+                        window.location.href = 'admin-dashboard.html';
+                        return;
+                    }
+                } catch (localError) {
+                    console.error('Local admin login failed:', localError);
+                }
+
+                errorDiv.textContent = 'Unable to reach the admin route. Please check the server or verify your credentials.';
+                errorDiv.style.display = 'block';
+                document.getElementById('secretKey').value = '';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Dashboard';
+            }
+        });
+
+        if (getAdminSession()) {
+            window.location.href = 'admin-dashboard.html';
+        }
+    </script>
+</body>
+</html>

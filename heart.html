@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Serve & Second Smile - Heart Link</title>
+    <link rel="stylesheet" href="style/all.css">
+    <script>document.documentElement.classList.add('page-is-entering');</script>
+    <link rel="stylesheet" href="style/heart.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="heart-page">
+
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <a href="#" class="logo">
+
+                    <svg width="220" height="55" viewBox="0 0 220 55">
+
+                        <defs>
+                            <!-- Arrow -->
+                            <marker id="arrow" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+                                <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff" />
+                            </marker>
+                        </defs>
+
+                        <!-- LEFT TEXT -->
+                        <text x="85" y="35" text-anchor="end" font-family="Poppins, sans-serif" font-weight="800"
+                            font-size="20" fill="#ffcdd2">
+                            Second
+                        </text>
+
+                        <!-- CENTER GROUP -->
+                        <g transform="translate(110,28)">
+
+                            <!-- Rotating Circular Arrows -->
+                            <g>
+                                <path d="M 0 -18 A 18 18 0 0 1 18 0" fill="none" stroke="#ffffff" stroke-width="1.4"
+                                    marker-end="url(#arrow)" />
+
+                                <path d="M 0 18 A 18 18 0 0 1 -18 0" fill="none" stroke="#ffffff" stroke-width="1.4"
+                                    marker-end="url(#arrow)" />
+
+                                <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s"
+                                    repeatCount="indefinite" />
+                            </g>
+
+                            <!-- Smaller Red Heart -->
+                            <path d="M0 -6
+             C -7 -13, -16 -4, 0 10
+             C 16 -4, 7 -13, 0 -6 Z" fill="#fc837f" />
+                        </g>
+
+                        <!-- RIGHT TEXT -->
+                        <text x="135" y="35" text-anchor="start" font-family="Poppins, sans-serif" font-weight="800"
+                            font-size="20" fill="#ffffff">
+                            Smile
+                        </text>
+
+                    </svg>
+                </a>
+            </div>
+            <!-- Hamburger button (visible only on small viewports) -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="heart-donate.html" class="nav-link"
+                    onclick="if(typeof AuthManager!=='undefined'&&!AuthManager.isLoggedIn()){event.preventDefault();sessionStorage.setItem('redirectAfterLogin','/heart-donate.html');window.location.href='login.html';}">Donate
+                    More</a>
+                <a href="login.html" class="nav-link login-btn" data-label="Join"><i class="fas fa-user"></i> Join</a>
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+    <section class="about-heartlink">
+        <h2>Why Second Smile?</h2>
+        <p>
+            Second Smile extends Second Serve’s mission beyond food.
+            Many families need more than meals — they need warm clothes,
+            educational books, and joyful toys for children.
+        </p>
+
+        <div class="stats">
+
+            <div class="stat-box">
+                <h3 id="clothes-count"></h3>
+                <div class="loader" id="clothes-loader"></div>
+                <p>Clothes Donated</p>
+            </div>
+
+            <div class="stat-box">
+                <h3 id="books-count"></h3>
+                <div class="loader" id="books-loader"></div>
+                <p>Books Shared</p>
+            </div>
+
+            <div class="stat-box">
+                <h3 id="toys-count"></h3>
+                <div class="loader" id="toys-loader"></div>
+                <p>Toys Delivered</p>
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!--  head-->
+    <main class="main-content">
+        <div class="heart-h1">
+            <h3>More To Donate</h3>
+        </div>
+
+        <!-- Donation Sections -->
+        <section class="donation-container">
+
+            <div class="donation-card">
+                <h2><i class="fas fa-shirt"></i> Clothes Donation</h2>
+                <p>Donate gently used clothes to help families stay warm and confident.</p>
+                <a href="heart-donate.html"
+                    onclick="if(typeof AuthManager!=='undefined'&&!AuthManager.isLoggedIn()){event.preventDefault();sessionStorage.setItem('redirectAfterLogin','/heart-donate.html');window.location.href='login.html';}"><button
+                        class="donate-btn" data-type="Clothes">Donate Clothes</button></a>
+            </div>
+
+            <div class="donation-card">
+                <h2><i class="fas fa-book"></i> Books Donation</h2>
+                <p>Share knowledge and education by donating books to children and students.</p>
+                <a href="heart-donate.html"
+                    onclick="if(typeof AuthManager!=='undefined'&&!AuthManager.isLoggedIn()){event.preventDefault();sessionStorage.setItem('redirectAfterLogin','/heart-donate.html');window.location.href='login.html';}"><button
+                        class="donate-btn" data-type="Books">Donate Books</button></a>
+            </div>
+
+            <div class="donation-card">
+                <h2><i class="fas fa-puzzle-piece"></i> Toys Donation</h2>
+                <p>Bring smiles to children by donating toys that can create joyful memories.</p>
+                <a href="heart-donate.html"
+                    onclick="if(typeof AuthManager!=='undefined'&&!AuthManager.isLoggedIn()){event.preventDefault();sessionStorage.setItem('redirectAfterLogin','/heart-donate.html');window.location.href='login.html';}"><button
+                        class="donate-btn" data-type="Toys">Donate Toys</button></a>
+            </div>
+
+        </section>
+
+        <section class="smile-live-section">
+            <div class="section-inner">
+                <h3>Recent Second Smile Donations</h3>
+                <p>Live listings from donors, ready for NGO pickup and distribution.</p>
+                <div class="smile-donation-grid" id="smileDonationGrid">
+                    <article class="smile-donation-card smile-donation-card--loading">
+                        <p>Loading Second Smile donations...</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Second Serve &amp; Second Smile | All Rights Reserved | Recovering Food, Feeding Hope</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Toggle -->
+    <button id="chat-toggle"><i class="fas fa-comments"></i> Chat</button>
+
+    <!-- Chat Overlay -->
+    <div id="chat-overlay">
+        <iframe src="chat.html?heart=1"></iframe>
+    </div>
+
+    <script src="script/api-config.js"></script>
+    <script src="script/api-utils.js"></script>
+    <script src="script/api-extended.js"></script>
+    <script src="script/auth-manager.js"></script>
+    <script src="script/shared-utils.js"></script>
+    <script src="script/all.js"></script>
+    <script src="script/heart.js"></script>
+
+</body>
+
+</html>

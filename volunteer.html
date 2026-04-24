@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer | Second Serve</title>
+    <link rel="stylesheet" href="style/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--accent:#e36414;--accent2:#0f766e;--accent3:#f4b860;--bg:#fff7ef;--text:#1f2937;--muted:#6b7280;--card:#ffffff;--border:#ead7c8}
+        *{box-sizing:border-box} body{margin:0;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(244,184,96,.28),transparent 25%),radial-gradient(circle at top right,rgba(15,118,110,.14),transparent 22%),linear-gradient(180deg,#fffdf9,var(--bg));transition:background .3s ease,color .3s ease}
+        .wrap{width:min(1120px,calc(100% - 32px));margin:0 auto}.hero{padding:104px 0 18px}.hero-grid{display:grid;grid-template-columns:1.12fr .78fr;gap:18px;align-items:start}.main-grid{display:grid;gap:24px;padding:0 0 64px}
+        .card{background:rgba(255,255,255,.94);border:1px solid var(--border);border-radius:24px;box-shadow:0 16px 40px rgba(15,23,42,.08)}
+        .hero-copy,.mail-card,.panel{padding:28px}.hero-copy{padding:24px 24px 22px}.mail-card{padding:22px 22px 20px}.tag{display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(227,100,20,.12);color:#9a3f09;font-weight:700;font-size:.82rem;text-transform:uppercase}
+        h1{font-size:clamp(1.85rem,3.6vw,3.4rem);line-height:1.08;margin:14px 0 10px} h2{margin:0 0 12px;font-size:1.55rem} p{color:var(--muted);line-height:1.7}
+        .hero-copy p,.mail-card p{font-size:1rem}
+        .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 18px}.stat{padding:13px 12px;border-radius:18px;background:#fff;border:1px solid #e7ecef;min-height:86px;display:grid;place-items:center;text-align:center}.stat strong{display:block;color:var(--accent2);font-size:1.2rem}
+        .actions{display:flex;flex-wrap:wrap;gap:12px}.actions a,.submit-btn,.ghost-btn{padding:12px 16px;border-radius:14px;font-weight:700;text-decoration:none;border:none;cursor:pointer}
+        .actions button{padding:12px 16px;border-radius:14px;font-weight:700;border:none;cursor:pointer}
+        .primary{text-decoration:none;background:linear-gradient(135deg,var(--accent),#f59e0b);color:#fff}.secondary,.ghost-btn{background:rgba(15,118,110,.1);color:var(--accent2)}
+        .info-list{display:grid;gap:10px;margin-top:14px}.info{padding:12px 14px;border-radius:16px;background:#fff;border:1px solid #e7ecef}.info p{margin:6px 0 0}
+        .join-banner{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:center;padding:28px;border-radius:28px;background:linear-gradient(135deg,#fff7ef,#fff 42%,#eefbf8);border:1px solid var(--border);box-shadow:0 18px 38px rgba(15,23,42,.08)}
+        .join-banner h2{font-size:clamp(1.8rem,3vw,2.5rem);margin-bottom:10px}
+        .join-banner p{margin:0 0 18px}
+        .join-points{display:grid;gap:10px}
+        .join-point{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:600}
+        .join-point i{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:rgba(15,118,110,.12);color:var(--accent2)}
+        .join-cta{display:grid;gap:12px;padding:22px;border-radius:22px;background:#fff;border:1px solid #e9ecef}
+        .join-badge{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:8px 12px;border-radius:999px;background:rgba(227,100,20,.12);color:#9a3f09;font-weight:700}
+        .mail-link{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 14px;margin-top:12px;border-radius:16px;background:var(--accent2);color:#fff;text-decoration:none;font-weight:700}
+        .main-grid{padding:0 0 64px}.form{display:grid;gap:16px}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:grid;gap:8px}
+        label{font-weight:700}.field input,.field select,.field textarea{width:100%;padding:13px 14px;border-radius:14px;border:1px solid #d7dce2;font:inherit;background:#fff;color:var(--text)}
+        .input-icon-wrap{position:relative}
+        .input-icon-wrap .location-btn{
+            position:absolute;
+            right:8px;
+            left:auto;
+            top:25px;
+            transform:translateY(-50%);
+            width:30px;
+            height:30px;
+            border:none;
+            border-radius:50%;
+            background:linear-gradient(135deg,var(--accent2),#2dd4bf);
+            color:#fff;
+            cursor:pointer;
+            display:grid;
+            place-items:center;
+            padding:0;
+            z-index:2;
+            box-shadow:0 8px 18px rgba(15,118,110,.22);
+            transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+        .input-icon-wrap .location-btn:hover{
+            transform:translateY(-50%) scale(1.08);
+            box-shadow:0 10px 22px rgba(15,118,110,.3);
+            filter:brightness(1.05);
+        }
+        .input-icon-wrap .location-btn:active{transform:translateY(-50%) scale(.96)}
+        .input-icon-wrap .location-btn:disabled{opacity:.65;cursor:wait;box-shadow:0 6px 14px rgba(15,118,110,.16)}
+        .input-icon-wrap .location-btn:focus-visible{
+            outline:3px solid rgba(15,118,110,.2);
+            outline-offset:3px;
+        }
+        .input-icon-wrap input{padding-left:14px;padding-right:48px}
+        .input-icon-wrap:focus-within .location-btn{box-shadow:0 10px 22px rgba(15,118,110,.32)}
+        body.dark-mode .input-icon-wrap .location-btn{
+            background:linear-gradient(135deg,#0f766e,#3b82f6);
+            box-shadow:0 8px 18px rgba(0,0,0,.3);
+        }
+        .field textarea{min-height:110px;resize:vertical}.status{display:none;margin-top:14px;padding:14px;border-radius:14px;font-weight:600}.status.show{display:block}.status.ok{background:#ecfdf3;color:#166534}.status.err{background:#fef2f2;color:#b91c1c}
+        .list-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.meta{margin:0 0 16px}.list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+        .table-shell{overflow:auto;border-radius:22px;border:1px solid #e7ecef;background:#fff}
+        .table-head,.item{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(160px,.95fr) minmax(220px,1.15fr) minmax(150px,.85fr) minmax(140px,.85fr);gap:12px;align-items:center}
+        .table-head{padding:14px 18px;background:linear-gradient(90deg,#fff4ea,#f5fbfa);font-size:.82rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#6c4a2a}
+        .item{padding:18px;border-top:1px solid #edf1f4;background:#fff}
+        .item:first-child{border-top:none}
+        .person{display:grid;gap:4px}
+        .person strong{font-size:1rem}
+        .person small,.cell-sub{color:var(--muted);word-break:break-word;overflow-wrap:anywhere}
+        .pill{padding:6px 10px;border-radius:999px;background:rgba(227,100,20,.12);color:#9a3f09;font-size:.83rem;font-weight:700;width:max-content}
+        .phone-link{display:inline-flex;align-items:center;gap:8px;color:var(--accent2);font-weight:700;text-decoration:none}
+        .phone-link:hover{text-decoration:underline}
+        .empty{text-align:center;padding:24px;border:1px dashed #cbd5e1;border-radius:18px;color:var(--muted)}
+        .loading-wrap{display:grid;place-items:center;gap:14px;padding:26px;border:1px dashed #cbd5e1;border-radius:18px;background:linear-gradient(180deg,#fff,#fff8f2)}
+        .loading-spinner{width:46px;height:46px;border-radius:50%;border:4px solid rgba(227,100,20,.18);border-top-color:var(--accent);border-right-color:var(--accent2);animation:spin 1s linear infinite}
+        .loading-text{margin:0;color:var(--muted);text-align:center}
+        .skeleton-list{display:grid;gap:12px}
+        .skeleton-card{padding:16px;border-radius:18px;border:1px solid #e7ecef;background:#fff}
+        .skeleton-line{height:12px;border-radius:999px;background:linear-gradient(90deg,#f4efe8 25%,#fff8f2 50%,#f4efe8 75%);background-size:220% 100%;animation:shimmer 1.35s infinite}
+        .skeleton-line + .skeleton-line{margin-top:10px}
+        .skeleton-line.short{width:34%}.skeleton-line.mid{width:55%}.skeleton-line.long{width:100%}
+        .sync-note{margin-top:8px;font-size:.88rem;color:var(--muted)}
+        .panel-soft{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,250,244,.92))}
+        body.dark-mode{--bg:#0f172a;--text:#e5edf7;--muted:#9fb0c6;--card:#142033;--border:#2a3a52;background:radial-gradient(circle at top left,rgba(227,100,20,.16),transparent 26%),radial-gradient(circle at top right,rgba(15,118,110,.18),transparent 24%),linear-gradient(180deg,#08111f,#0f172a)}
+        body.dark-mode .card,body.dark-mode .join-cta,body.dark-mode .table-shell,body.dark-mode .skeleton-card{background:rgba(20,32,51,.92);border-color:#2a3a52;box-shadow:0 18px 42px rgba(0,0,0,.34)}
+        body.dark-mode .join-banner{background:linear-gradient(135deg,rgba(26,35,52,.94),rgba(12,20,34,.95) 45%,rgba(10,56,55,.72));border-color:#2a3a52}
+        body.dark-mode .stat,body.dark-mode .info,body.dark-mode .item,body.dark-mode .loading-wrap{background:rgba(13,23,38,.92);border-color:#2a3a52}
+        body.dark-mode .table-head{background:linear-gradient(90deg,rgba(227,100,20,.16),rgba(15,118,110,.2));color:#ffd9b4}
+        body.dark-mode .tag,body.dark-mode .join-badge,body.dark-mode .pill{background:rgba(244,184,96,.16);color:#ffd39c}
+        body.dark-mode .secondary,body.dark-mode .ghost-btn{background:rgba(15,118,110,.2);color:#8de1d9}
+        body.dark-mode .mail-link{background:linear-gradient(135deg,#0f766e,#155e75)}
+        body.dark-mode .field input,body.dark-mode .field select,body.dark-mode .field textarea{background:rgba(255,255,255,.05);color:#e5edf7;border-color:#31445f}
+        body.dark-mode .field input::placeholder,body.dark-mode .field textarea::placeholder{color:#8ea2bc}
+        body.dark-mode .field select option{background:#142033;color:#e5edf7}
+        body.dark-mode .empty{border-color:#31445f;color:#9fb0c6}
+        body.dark-mode .phone-link{color:#7ae6d9}
+        body.dark-mode .skeleton-line{background:linear-gradient(90deg,#1b2a40 25%,#243753 50%,#1b2a40 75%);background-size:220% 100%}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        @media (max-width:900px){.hero-grid,.join-banner{grid-template-columns:1fr}}
+        @media (max-width:760px){.row,.stats{grid-template-columns:1fr}.list-top{flex-direction:column}.table-head,.item{grid-template-columns:1fr}.table-head{display:none}.item{gap:14px;border-radius:18px;margin-bottom:12px;border:1px solid #edf1f4}.table-shell{border:none;background:transparent}.item:first-child{border-top:1px solid #edf1f4}}
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo"> <a href="#" class="logo">
+
+    <svg width="200" height="50" viewBox="0 0 200 50">
+
+  <defs>
+    <!-- 3D Plate Gradients -->
+    <radialGradient id="plateOuter" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#d9d9d9"/>
+    </radialGradient>
+
+    <radialGradient id="plateInner" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ececec"/>
+    </radialGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5"
+                    flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow -->
+    <marker id="arrow"
+            markerWidth="5"
+            markerHeight="5"
+            refX="4"
+            refY="2.5"
+            orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT TEXT (closer) -->
+  <text x="78" y="32"
+        text-anchor="end"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffb300">
+    Second
+  </text>
+
+  <!-- CENTER -->
+  <g transform="translate(100,25)">
+
+    <!-- Rotating Arrows -->
+    <g>
+      <path d="M 0 -20 A 20 20 0 0 1 20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <path d="M 0 20 A 20 20 0 0 1 -20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="360"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </g>
+
+    <!-- Plate Base -->
+    <circle cx="0" cy="0" r="11"
+            fill="url(#plateOuter)"
+            stroke="#cfcfcf"
+            stroke-width="0.8"
+            filter="url(#shadow)"/>
+
+    <!-- Rim -->
+    <circle cx="0" cy="0" r="9"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.8"/>
+
+    <!-- Inner Bowl -->
+    <circle cx="0" cy="0" r="6.5"
+            fill="url(#plateInner)"
+            stroke="#e0e0e0"
+            stroke-width="0.5"/>
+
+  </g>
+
+  <!-- RIGHT TEXT (closer) -->
+  <text x="122" y="32"
+        text-anchor="start"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffffff">
+    Serve
+  </text>
+
+</svg>
+  </a></div>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="donate.html" class="nav-link">Donate Food</a>
+                <a href="find-ngo.html" class="nav-link">Find NGOs</a>
+                <a href="login.html" class="nav-link login-btn" data-label="Login"><i class="fas fa-user"></i> Login</a>
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+            </nav>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="wrap hero-grid">
+            <div class="card hero-copy">
+                <span class="tag">Join Our Journey</span>
+                <h1 style="color: #f57424;">Volunteer with Second Serve</h1>
+                <p>Help us coordinate food pickups, support NGO delivery, and build a faster response network for people in need.</p>
+                <div class="stats">
+                    <div class="stat"><strong id="heroCount">0+</strong><span>volunteers</span></div>
+                    <div class="stat"><strong>24/7</strong><span>community spirit</span></div>
+                    <div class="stat"><strong>1 mission</strong><span>reduce waste</span></div>
+                </div>
+                <div class="actions">
+                    <button type="button" class="primary" id="volunteerNavBtn">Become a Volunteer</button>
+                    <a href="#volunteer-list" class="secondary">View List</a>
+                </div>
+            </div>
+            <div class="card mail-card">
+                <h2 style="color: #f57424;">Anyone Can Join</h2>
+                <p>Students, local residents, NGO helpers, and pickup volunteers can all join. Start by checking the volunteer list, then use the form to add your details.</p>
+                <a id="mailLink" class="mail-link" href="mailto:secondserveofficial@gmail.com"><i class="fas fa-envelope"></i> secondserveofficial@gmail.com</a>
+                <div class="info-list">
+                    <div class="info"><strong>Pickup Support</strong><p>Help move surplus food quickly and safely.</p></div>
+                    <div class="info"><strong>Open for Everyone</strong><p>If you want to help the community, you can join and become part of the network.</p></div>
+                    <div class="info"><strong>Phone-Based Coordination</strong><p>Volunteer phone numbers stay visible in the list for faster contact.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap main-grid">
+        <section class="join-banner">
+            <div>
+                <span class="join-badge"><i class="fas fa-hands-helping"></i> Open Volunteer Network</span>
+                <h2>Want to join this volunteer team?</h2>
+                <p>First, look through the current volunteer contact list. If you are ready to help too, move to the join form and submit your details so the backend can add you to the live list.</p>
+                <div class="join-points">
+                    <div class="join-point"><i class="fas fa-check"></i><span>Anyone willing to help can join.</span></div>
+                    <div class="join-point"><i class="fas fa-phone"></i><span>Phone numbers stay visible for faster coordination.</span></div>
+                    <div class="join-point"><i class="fas fa-database"></i><span>New entries are ready to sync with your backend and database.</span></div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="card panel panel-soft" id="volunteer-list">
+            <div class="list-top">
+                <div>
+                    <h2>Volunteer Contact List</h2>
+                    <p class="meta" id="listMeta">Connecting to live volunteer data...</p>
+                    <p class="sync-note" id="syncNote">Waiting for first update.</p>
+                </div>
+                <button class="ghost-btn" id="refreshBtn" type="button"><i class="fas fa-rotate-right"></i> Refresh</button>
+            </div>
+            <div class="table-shell">
+                <div class="table-head">
+                    <span>Volunteer</span>
+                    <span>Phone Number</span>
+                    <span>Email</span>
+                    <span>City</span>
+                    <span>Role</span>
+                </div>
+                <ul class="list" id="volunteerCards"></ul>
+            </div>
+        </aside>
+
+        <section class="card panel panel-soft" id="join-form">
+            <h2>Join This List</h2>
+            <p>Seen the current volunteer board? Add your name, phone number, and role below to join the network.</p>
+            <form class="form" id="volunteerForm">
+                <div class="row">
+                    <div class="field"><label for="fullName">Full Name</label><input id="fullName" name="fullName" required></div>
+                    <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required></div>
+                </div>
+                <div class="row">
+                    <div class="field"><label for="phone">Phone Number</label><input id="phone" name="phone" type="tel" pattern="[0-9+\-\s()]{7,20}" required></div>
+                    <div class="field">
+                        <label for="city">City</label>
+                        <div class="input-icon-wrap">
+                            <button type="button" class="location-btn" id="cityLocateBtn" title="Use current location" aria-label="Use current location">
+                                <i class="fas fa-location-dot" aria-hidden="true"></i>
+                            </button>
+                            <input id="city" name="city" required placeholder="Enter your city or click the pin">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field"><label for="role">Volunteer Role</label><select id="role" name="role" required><option value="">Select role</option><option>Pickup Volunteer</option><option>NGO Support</option><option>Awareness Volunteer</option><option>Event Volunteer</option></select></div>
+                    <div class="field"><label for="availability">Availability</label><select id="availability" name="availability" required><option value="">Select availability</option><option>Weekdays</option><option>Weekends</option><option>Evenings</option><option>Flexible</option></select></div>
+                </div>
+                <div class="field"><label for="message">Message</label><textarea id="message" name="message" placeholder="Tell us how you want to help."></textarea></div>
+                <button class="submit-btn primary" id="submitBtn" type="submit"><i class="fas fa-heart"></i> Join Our Journey</button>
+            </form>
+            <div class="status" id="formStatus"></div>
+        </section>
+    </section>
+
+    <footer class="footer"><div class="section-container"><div class="footer-bottom"><p>&copy; 2026 Second Serve | All Rights Reserved | Recovering Food, Feeding Hope</p></div></div></footer>
+
+    <script src="script/api-config.js"></script>
+    <script src="script/api-utils.js"></script>
+    <script src="script/all.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            (function () {
+                const STORAGE_KEY = 'secondserve_volunteers';
+                const fallbackEmail = 'volunteer@secondserve.org';
+                const refreshIntervalMs = 30000;
+                const endpointConfig = window.API_CONFIG && window.API_CONFIG.ENDPOINTS && window.API_CONFIG.ENDPOINTS.VOLUNTEERS
+                    ? window.API_CONFIG.ENDPOINTS.VOLUNTEERS
+                    : {};
+                const endpoints = {
+                    CREATE: endpointConfig.CREATE || endpointConfig.JOIN || '/volunteers/join',
+                LIST: endpointConfig.LIST || endpointConfig.GET_ALL || '/volunteers'
+            };
+            const listCandidates = unique([endpoints.LIST, '/volunteers', '/volunteers/list', '/volunteer', '/volunteer/list']);
+            const createCandidates = unique([endpoints.CREATE, '/volunteers/join', '/volunteers', '/volunteer/join', '/volunteer']);
+            const sample = [
+                { id: 1, fullName: 'Aarav Sharma', email: 'aarav@example.com', phone: '+91 98765 43210', city: 'Bengaluru', role: 'Pickup Volunteer', availability: 'Weekends', message: 'Happy to help with pickups and coordination.' },
+                { id: 2, fullName: 'Meera Nair', email: 'meera@example.com', phone: '+91 99887 66554', city: 'Chennai', role: 'Awareness Volunteer', availability: 'Flexible', message: 'I can help with outreach and events.' }
+            ];
+
+            const form = document.getElementById('volunteerForm');
+            const statusBox = document.getElementById('formStatus');
+            const cards = document.getElementById('volunteerCards');
+            const listMeta = document.getElementById('listMeta');
+            const syncNote = document.getElementById('syncNote');
+            const heroCount = document.getElementById('heroCount');
+            const submitBtn = document.getElementById('submitBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const mailLink = document.getElementById('mailLink');
+            const fullNameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const cityInput = document.getElementById('city');
+            const cityLocateBtn = document.getElementById('cityLocateBtn');
+            const roleInput = document.getElementById('role');
+            const availabilityInput = document.getElementById('availability');
+            const messageInput = document.getElementById('message');
+            let refreshTimer = null;
+            let statusTimer = null;
+
+                const volunteerNavBtn = document.getElementById('volunteerNavBtn');
+                if (volunteerNavBtn) {
+                    volunteerNavBtn.addEventListener('click', function() {
+                        const target = document.getElementById('join-form');
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            setTimeout(function() {
+                                if (fullNameInput) fullNameInput.focus();
+                            }, 600);
+                        }
+                    });
+                }
+
+            if (cityLocateBtn) {
+                cityLocateBtn.addEventListener('click', useCurrentLocation);
+            }
+
+            if (!localStorage.getItem(STORAGE_KEY)) localStorage.setItem(STORAGE_KEY, JSON.stringify(sample));
+            if (mailLink) mailLink.href = 'mailto:' + fallbackEmail + '?subject=' + encodeURIComponent('I want to join the Second Serve journey');
+            if (form) form.addEventListener('submit', onSubmit);
+            if (refreshBtn) refreshBtn.addEventListener('click', function () { loadVolunteers({ manual: true }); });
+            loadVolunteers({ initial: true });
+            startAutoRefresh();
+
+            async function onSubmit(event) {
+                event.preventDefault();
+                const volunteer = {
+                    fullName: fullNameInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    phone: phoneInput.value.trim(),
+                    city: cityInput.value.trim(),
+                    role: roleInput.value,
+                    availability: availabilityInput.value,
+                    message: messageInput.value.trim(),
+                    createdAt: new Date().toISOString()
+                };
+
+                if (!volunteer.fullName || !volunteer.email || !volunteer.phone || !volunteer.city || !volunteer.role || !volunteer.availability) {
+                    return showStatus('Please fill in all required fields.', 'err');
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                showStatus('Saving your details and syncing with the volunteer database...', 'ok');
+                try {
+                    await saveVolunteer(volunteer);
+                    form.reset();
+                    showStatus('Volunteer submitted and sent for admin verification.', 'ok');
+                    await loadVolunteers({ preserveStatus: true });
+                } catch (error) {
+                    showStatus(error.message || 'Could not submit volunteer details.', 'err');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-heart"></i> Join Our Journey';
+                }
+            }
+
+            async function saveVolunteer(volunteer) {
+                if (window.APIUtils && typeof window.APIUtils.post === 'function') {
+                    for (const endpoint of createCandidates) {
+                        try {
+                            await window.APIUtils.post(endpoint, volunteer, { includeAuth: false, showError: false });
+                            return;
+                        } catch (error) {}
+                    }
+                }
+                const items = getLocalVolunteers();
+                items.unshift({ id: Date.now(), status: 'pending', reviewed_at: null, reviewed_by: null, ...volunteer });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            }
+
+            async function loadVolunteers(options) {
+                const settings = options || {};
+                refreshBtn.disabled = true;
+                if (!settings.preserveStatus) {
+                    clearStatus();
+                }
+                if (settings.initial) {
+                    renderLoadingState();
+                } else {
+                    listMeta.textContent = 'Refreshing volunteer data...';
+                }
+                let items = [];
+                let source = 'Live backend list';
+                let syncedAt = new Date();
+                let backendConnected = false;
+                if (window.APIUtils && typeof window.APIUtils.get === 'function') {
+                    for (const endpoint of listCandidates) {
+                        try {
+                            const response = await window.APIUtils.get(endpoint, { includeAuth: false, showError: false });
+                            items = filterApproved(normalize(response.data));
+                            if (items.length || hasVolunteerCollection(response.data)) {
+                                backendConnected = true;
+                                cacheVolunteers(items);
+                                break;
+                            }
+                        } catch (error) {}
+                    }
+                }
+
+                if (!backendConnected) {
+                    items = filterApproved(getLocalVolunteers());
+                    source = 'Local preview list';
+                }
+
+                render(items, source);
+                syncNote.textContent = source === 'Live backend list'
+                    ? 'Last synced ' + formatSyncTime(syncedAt) + '. Only approved volunteers are shown publicly.'
+                    : 'Showing saved preview data because live volunteer data is unavailable right now.';
+                refreshBtn.disabled = false;
+            }
+
+            function getLocalVolunteers() {
+                try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (error) { return []; }
+            }
+
+            function cacheVolunteers(items) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            }
+
+            function normalize(data) {
+                if (Array.isArray(data)) return data;
+                if (data && Array.isArray(data.volunteers)) return data.volunteers;
+                if (data && Array.isArray(data.items)) return data.items;
+                if (data && Array.isArray(data.results)) return data.results;
+                if (data && Array.isArray(data.data)) return data.data;
+                if (data && data.data && Array.isArray(data.data.volunteers)) return data.data.volunteers;
+                if (data && data.result && Array.isArray(data.result)) return data.result;
+                return [];
+            }
+
+            function filterApproved(items) {
+                return (items || []).filter(function (item) {
+                    const status = String(item && item.status ? item.status : '').toLowerCase();
+                    return !status || status === 'approved';
+                });
+            }
+
+            function hasVolunteerCollection(data) {
+                return !!(
+                    Array.isArray(data)
+                    || (data && Array.isArray(data.volunteers))
+                    || (data && Array.isArray(data.items))
+                    || (data && Array.isArray(data.results))
+                    || (data && Array.isArray(data.data))
+                    || (data && data.data && Array.isArray(data.data.volunteers))
+                    || (data && data.result && Array.isArray(data.result))
+                );
+            }
+
+            function renderLoadingState() {
+                heroCount.textContent = '...';
+                cards.innerHTML = ''
+                    + '<li class="loading-wrap">'
+                    + '<div class="loading-spinner" aria-hidden="true"></div>'
+                    + '<p class="loading-text">Fetching the latest volunteer records from the backend...</p>'
+                    + '</li>'
+                    + skeletonCard()
+                    + skeletonCard();
+            }
+
+            function render(items, source) {
+                heroCount.textContent = items.length + '+';
+                listMeta.textContent = 'Approved volunteers: ' + items.length;
+                if (!items.length) {
+                    cards.innerHTML = '<li class="empty">No approved volunteers found yet. New submissions wait for admin verification.</li>';
+                    return;
+                }
+                cards.innerHTML = items.map(function (item) {
+                    const phone = item.phone || item.phoneNumber || 'N/A';
+                    return '<li class="item">'
+                        + '<div class="person"><strong>' + esc(item.fullName || item.name || 'Volunteer') + '</strong><small>' + esc(item.availability || 'Flexible') + '</small></div>'
+                        + '<div><a class="phone-link" href="tel:' + escTel(phone) + '"><i class="fas fa-phone"></i> ' + esc(phone) + '</a></div>'
+                        + '<div class="cell-sub">' + esc(item.email || 'N/A') + '</div>'
+                        + '<div class="cell-sub">' + esc(item.city || 'Unknown') + '</div>'
+                        + '<div><span class="pill">' + esc(item.role || 'Support Volunteer') + '</span></div>'
+                        + (item.message ? '<div class="cell-sub" style="grid-column:1/-1">' + esc(item.message) + '</div>' : '')
+                        + '</li>';
+                }).join('');
+            }
+
+            function skeletonCard() {
+                return '<li class="skeleton-card" aria-hidden="true"><div class="skeleton-line short"></div><div class="skeleton-line mid"></div><div class="skeleton-line long"></div><div class="skeleton-line long"></div></li>';
+            }
+
+            function showStatus(message, type) {
+                if (statusTimer) {
+                    clearTimeout(statusTimer);
+                    statusTimer = null;
+                }
+                statusBox.className = 'status show ' + type;
+                statusBox.textContent = message;
+
+                const hideAfter = type === 'ok' ? 4000 : 6000;
+                statusTimer = setTimeout(clearStatus, hideAfter);
+            }
+
+            function clearStatus() {
+                statusBox.className = 'status';
+                statusBox.textContent = '';
+            }
+
+            function setLocationButtonState(isLoading) {
+                if (!cityLocateBtn) return;
+                cityLocateBtn.disabled = isLoading;
+                cityLocateBtn.innerHTML = isLoading
+                    ? '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>'
+                    : '<i class="fas fa-location-dot" aria-hidden="true"></i>';
+            }
+
+            async function useCurrentLocation() {
+                if (!navigator.geolocation) {
+                    showStatus('Your browser does not support location access.', 'err');
+                    return;
+                }
+
+                setLocationButtonState(true);
+                showStatus('Finding your current location...', 'ok');
+
+                navigator.geolocation.getCurrentPosition(
+                    async function (position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+
+                        try {
+                            const locationLabel = await reverseGeocode(lat, lon);
+                            cityInput.value = locationLabel || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                            showStatus(locationLabel ? `Location set to ${locationLabel}.` : 'Location found. Coordinates filled in.', 'ok');
+                        } catch (error) {
+                            cityInput.value = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                            showStatus('Location found, but city lookup failed. Coordinates were filled in instead.', 'ok');
+                        } finally {
+                            setLocationButtonState(false);
+                        }
+                    },
+                    function (error) {
+                        setLocationButtonState(false);
+                        const message = error && error.message ? error.message : 'Unable to access your location.';
+                        showStatus(message, 'err');
+                    },
+                    { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
+                );
+            }
+
+            async function reverseGeocode(latitude, longitude) {
+                const url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&addressdetails=1&lat='
+                    + encodeURIComponent(latitude)
+                    + '&lon='
+                    + encodeURIComponent(longitude);
+
+                const response = await fetch(url, {
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Reverse geocoding failed');
+                }
+
+                const data = await response.json();
+                const address = data.address || {};
+                const parts = [
+                    address.city,
+                    address.town,
+                    address.village,
+                    address.suburb,
+                    address.county,
+                    address.state,
+                    address.country
+                ].filter(Boolean);
+
+                return parts.join(', ') || data.display_name || '';
+            }
+
+            function startAutoRefresh() {
+                stopAutoRefresh();
+                refreshTimer = setInterval(function () {
+                    loadVolunteers({ silent: true });
+                }, refreshIntervalMs);
+                window.addEventListener('beforeunload', stopAutoRefresh);
+            }
+
+            function stopAutoRefresh() {
+                if (refreshTimer) {
+                    clearInterval(refreshTimer);
+                    refreshTimer = null;
+                }
+            }
+
+            function formatSyncTime(date) {
+                try {
+                    return new Intl.DateTimeFormat(undefined, {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    }).format(date);
+                } catch (error) {
+                    return date.toLocaleTimeString();
+                }
+            }
+
+            function unique(list) {
+                return list.filter(function (value, index, array) {
+                    return value && array.indexOf(value) === index;
+                });
+            }
+
+            function escTel(value) {
+                return String(value).replace(/[^0-9+]/g, '');
+            }
+
+            function esc(value) {
+                return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+            })();
+        });
+    </script>
+</body>
+</html>

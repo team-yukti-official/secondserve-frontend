@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Second Serve & Second Smile — Donor Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+/* ─── ROOT VARIABLES ────────────────────────────────────────────────────── */
+:root {
+  --primary:       #2e7d32;
+  --primary-light: #66bb6a;
+  --primary-dark:  #1b5e20;
+  --primary-grad:  linear-gradient(135deg,#2e7d32 0%,#43a047 50%,#66bb6a 100%);
+  --accent:        #ffca28;
+  --accent-dark:   #ffa000;
+  --accent-grad:   linear-gradient(135deg,#ffca28,#ffa000);
+  --orange:        #ff6d00;
+  --text-dark:     #1a1a2e;
+  --text-med:      #374151;
+  --text-light:    #6b7280;
+  --bg:            #f0f4f8;
+  --bg-white:      #ffffff;
+  --card:          #ffffff;
+  --border:        #e5e7eb;
+  --border-light:  #f3f4f6;
+  --shadow-sm:     0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:     0 4px 20px rgba(0,0,0,.10);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,.13);
+  --shadow-green:  0 4px 20px rgba(46,125,50,.25);
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;--r-full:9999px;
+  --ease:all .25s cubic-bezier(.4,0,.2,1);
+}
+body.dark-mode {
+  --text-dark:#f1f5f9;--text-med:#cbd5e1;--text-light:#94a3b8;
+  --bg:#0f172a;--bg-white:#1e293b;--card:#1e293b;
+  --border:#334155;--border-light:#253347;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.4);--shadow-md:0 4px 20px rgba(0,0,0,.5);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.6);--shadow-green:0 4px 20px rgba(102,187,106,.2);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter','Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text-dark);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ─── TOPBAR ─────────────────────────────────────────────────────────────── */
+.topbar{
+  background:var(--primary-grad);color:#fff;
+  padding:0 28px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 20px rgba(46,125,50,.35);
+}
+.brand{
+  display:flex;align-items:center;
+  text-decoration:none;
+  height:44px;flex-shrink:0;
+  transition:var(--ease);
+}
+.brand:hover{opacity:.9;transform:scale(1.02)}
+.brand svg{height:100%;width:auto}
+.topbar-right{display:flex;align-items:center;gap:10px}
+
+.icon-btn{
+  background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+  border-radius:50%;width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:1rem;cursor:pointer;transition:var(--ease);
+}
+.icon-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.5)}
+
+.cta-btn{
+  background:var(--accent-grad);color:#1b5e20;border:none;
+  padding:9px 20px;border-radius:var(--r-full);
+  font-weight:700;font-size:.85rem;cursor:pointer;transition:var(--ease);
+  display:inline-flex;align-items:center;gap:6px;
+  box-shadow:0 2px 10px rgba(255,202,40,.4);text-decoration:none;
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,202,40,.5)}
+
+/* CHAT POPUP */
+#chat-toggle{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:linear-gradient(135deg,#ffca28,#ffa000);
+  color:#1b5e20;
+  border:none;
+  padding:13px 22px;
+  border-radius:9999px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:.92rem;
+  z-index:9999;
+  box-shadow:0 8px 28px rgba(255,202,40,.4);
+  transition:var(--ease);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  letter-spacing:.02em;
+}
+#chat-toggle:hover{
+  background:linear-gradient(135deg,#ffd740,#ffab00);
+  transform:translateY(-3px);
+  box-shadow:0 12px 36px rgba(255,202,40,.5);
+}
+#chat-toggle.open{
+  background:linear-gradient(135deg,#1b5e20,#2e7d32);
+  color:#fff;
+}
+#chat-overlay{
+  position:fixed;
+  bottom:0;
+  right:24px;
+  width:380px;
+  height:520px;
+  display:none;
+  z-index:9999;
+  filter:drop-shadow(0 20px 50px rgba(0,0,0,.3));
+}
+#chat-overlay iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+  background:#fff;
+}
+
+
+/* ─── LAYOUT ─────────────────────────────────────────────────────────────── */
+.page-wrap{
+  display:flex;flex:1;max-width:1300px;
+  margin:0 auto;width:100%;
+  padding:28px 20px;gap:24px;align-items:flex-start;
+}
+
+.card{
+  background:var(--card);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);border:1px solid var(--border-light);
+  overflow:hidden;transition:var(--ease);
+}
+
+/* ─── SIDEBAR ────────────────────────────────────────────────────────────── */
+.sidebar{
+  width:290px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:16px;
+  position:sticky;top:80px;
+}
+
+/* ─── PROFILE CARD ───────────────────────────────────────────────────────── */
+.profile-cover{
+  height:76px;
+  background:linear-gradient(135deg,#ff6d00 0%,#ffca28 60%,#43a047 100%);
+  position:relative;
+}
+.profile-cover::after{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='18' fill='none' stroke='rgba(255,255,255,.1)' stroke-width='2'/%3E%3C/svg%3E") repeat;
+}
+.photo-wrap{
+  position:absolute;left:50%;bottom:-40px;
+  transform:translateX(-50%);
+}
+.profile-photo{
+  width:80px;height:80px;border-radius:50%;
+  border:4px solid var(--card);
+  background:linear-gradient(135deg,#ffca28,#ffa000);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;overflow:hidden;position:relative;
+  cursor:pointer;box-shadow:0 4px 16px rgba(255,202,40,.4);
+  transition:var(--ease);
+}
+.profile-photo img{
+  width:100%;height:100%;object-fit:cover;
+  position:absolute;border-radius:50%;
+}
+.photo-overlay{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;color:#fff;font-size:.82rem;gap:4px;
+}
+.profile-photo:hover .photo-overlay{opacity:1}
+
+.profile-body{padding:54px 20px 18px;text-align:center}
+.profile-name{
+  font-family:'Poppins',sans-serif;font-size:1.08rem;font-weight:700;
+  color:var(--text-dark);margin-bottom:3px;
+}
+.profile-sub{font-size:.8rem;color:var(--text-light);margin-bottom:10px}
+.donor-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,202,40,.15);color:#b45309;
+  border:1px solid rgba(255,202,40,.35);
+  padding:4px 12px;border-radius:var(--r-full);
+  font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;
+}
+body.dark-mode .donor-pill{background:rgba(255,202,40,.12);border-color:rgba(255,202,40,.25);color:var(--accent)}
+
+.profile-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--border);margin:0 -20px;
+}
+.ps{padding:12px 4px;text-align:center;border-right:1px solid var(--border)}
+.ps:last-child{border-right:none}
+.ps-val{
+  font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:800;
+  color:var(--primary);display:block;
+}
+.ps-lbl{font-size:.66rem;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em}
+
+/* ─── VIEW / EDIT ────────────────────────────────────────────────────────── */
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px 0;
+}
+.sec-title{
+  font-size:.73rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--text-light);
+}
+.edit-btn{
+  background:none;border:none;color:var(--primary);
+  font-size:.78rem;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:4px;padding:0;
+  transition:var(--ease);font-family:'Inter',sans-serif;
+}
+.edit-btn:hover{color:var(--primary-dark)}
+
+.info-rows{padding:6px 20px 16px}
+.i-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 0;border-bottom:1px solid var(--border-light);
+  font-size:.84rem;
+}
+.i-row:last-child{border-bottom:none}
+.i-row i{color:var(--primary);width:16px;font-size:.8rem;margin-top:2px;flex-shrink:0}
+.i-val{color:var(--text-med);font-weight:500;word-break:break-word}
+
+.profile-form{padding:10px 20px 20px}
+.fl-field{margin-bottom:13px}
+.fl-field label{
+  display:block;font-size:.73rem;font-weight:700;
+  color:var(--text-light);margin-bottom:5px;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.fl-field input,.fl-field textarea,.fl-field select{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  background:var(--bg-white);color:var(--text-dark);
+  font-family:'Inter',sans-serif;font-size:.87rem;
+  transition:var(--ease);outline:none;
+}
+.fl-field textarea{resize:none;height:70px}
+.fl-field input:focus,.fl-field textarea:focus{
+  border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,125,50,.1);
+}
+.fl-field input[readonly]{
+  background:var(--border-light);color:var(--text-light);cursor:not-allowed;
+}
+body.dark-mode .fl-field input[readonly]{background:rgba(255,255,255,.04)}
+body.dark-mode .fl-field input,.dark-mode .fl-field textarea{
+  background:rgba(255,255,255,.05);color:var(--text-dark);border-color:var(--border);
+}
+body.dark-mode .fl-field input:focus,.dark-mode .fl-field textarea:focus{background:rgba(255,255,255,.08)}
+
+.lock-note{font-size:.68rem;color:var(--text-light);margin-top:4px;display:flex;align-items:center;gap:4px}
+.save-btn{
+  width:100%;padding:11px;background:var(--primary-grad);color:#fff;
+  border:none;border-radius:var(--r-md);font-weight:700;font-size:.9rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:var(--ease);box-shadow:var(--shadow-green);margin-top:4px;
+  font-family:'Inter',sans-serif;
+}
+.save-btn:hover{background:linear-gradient(135deg,#1b5e20,#2e7d32);transform:translateY(-1px)}
+.save-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* ─── IMPACT CARD ────────────────────────────────────────────────────────── */
+.impact-body{padding:16px 20px}
+.prog-row{margin-bottom:14px}
+.prog-label{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:5px}
+.prog-label .val{font-weight:700;color:var(--primary)}
+.prog-bar{background:var(--border);border-radius:var(--r-full);height:8px;overflow:hidden}
+.prog-fill{height:100%;border-radius:var(--r-full);transition:width 1.2s ease}
+.pf-green{background:var(--primary-grad)}
+.pf-orange{background:var(--accent-grad)}
+.prog-note{font-size:.73rem;color:var(--text-light);margin-top:4px}
+
+.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.impact-stat{
+  background:var(--border-light);border-radius:var(--r-md);
+  padding:14px;text-align:center;
+  border:1px solid var(--border);
+}
+body.dark-mode .impact-stat{background:rgba(255,255,255,.04)}
+.impact-stat .iv{
+  font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:800;
+  color:var(--primary);display:block;
+}
+.impact-stat .il{font-size:.72rem;color:var(--text-light);margin-top:2px}
+
+/* ─── LEADERBOARD ────────────────────────────────────────────────────────── */
+.lb-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 20px;border-bottom:1px solid var(--border-light);
+  font-size:.84rem;
+}
+.lb-item:last-child{border-bottom:none}
+.lb-rank{
+  font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:800;
+  color:var(--text-light);width:28px;flex-shrink:0;text-align:center;
+}
+.lb-rank.gold{color:#f59e0b}
+.lb-name{flex:1;font-weight:500;color:var(--text-med)}
+.lb-val{font-size:.78rem;font-weight:700;color:var(--primary)}
+.lb-name.clickable{
+  cursor:pointer;
+  color:var(--text-dark);
+  text-decoration:none;
+  font-weight:700;
+  position:relative;
+  transition:var(--ease);
+}
+.lb-name.clickable::after{
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:-2px;
+  width:100%;
+  height:2px;
+  background:linear-gradient(90deg,#fb923c,#f59e0b,#facc15);
+  transform:scaleX(.35);
+  transform-origin:left;
+  opacity:.75;
+  transition:var(--ease);
+}
+.lb-name.clickable:hover{
+  color:var(--primary-dark);
+  letter-spacing:.01em;
+}
+.lb-name.clickable:hover::after{
+  transform:scaleX(1);
+  opacity:1;
+}
+body.dark-mode .lb-name.clickable{
+  color:#ffffff;
+  text-shadow:0 1px 3px rgba(0,0,0,.28);
+}
+body.dark-mode .lb-name.clickable:hover{color:#ffffff}
+.you-tag{
+  font-size:.65rem;font-weight:700;
+  background:rgba(46,125,50,.1);color:var(--primary);
+  padding:2px 7px;border-radius:var(--r-full);margin-left:6px;
+}
+
+/* ─── SIDE NAV ───────────────────────────────────────────────────────────── */
+.side-nav{padding:10px 12px}
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:var(--r-md);
+  font-size:.88rem;font-weight:500;color:var(--text-med);
+  transition:var(--ease);text-decoration:none;margin:2px 0;
+  border:none;background:none;width:100%;text-align:left;
+  cursor:pointer;font-family:'Inter',sans-serif;
+}
+.nav-link:hover{background:var(--border-light);color:var(--text-dark)}
+.nav-link.active{background:rgba(46,125,50,.1);color:var(--primary);font-weight:600}
+.nav-link i{width:18px;text-align:center;font-size:.88rem}
+.nav-link.danger{color:#ef4444}
+.nav-link.danger:hover{background:rgba(239,68,68,.08)}
+
+/* ─── MAIN ───────────────────────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;gap:20px;min-width:0}
+
+/* ─── STATS ──────────────────────────────────────────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat-card{
+  background:var(--card);border-radius:var(--r-lg);padding:20px;
+  border:1px solid var(--border-light);box-shadow:var(--shadow-sm);
+  transition:var(--ease);position:relative;overflow:hidden;
+}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sc-green::before{background:var(--primary-grad)}
+.sc-orange::before{background:var(--accent-grad)}
+.sc-blue::before{background:linear-gradient(135deg,#3b82f6,#60a5fa)}
+.sc-purple::before{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+
+.s-icon{width:42px;height:42px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:12px}
+.si-g{background:rgba(46,125,50,.1);color:var(--primary)}
+.si-o{background:rgba(255,160,0,.12);color:#e65100}
+.si-b{background:rgba(59,130,246,.1);color:#3b82f6}
+.si-p{background:rgba(139,92,246,.1);color:#8b5cf6}
+.s-val{font-family:'Poppins',sans-serif;font-size:1.85rem;font-weight:800;
+  color:var(--text-dark);letter-spacing:-.04em;line-height:1}
+.s-lbl{font-size:.78rem;color:var(--text-light);margin-top:5px;font-weight:500}
+.s-delta{font-size:.72rem;margin-top:8px;font-weight:600;display:flex;align-items:center;gap:3px}
+.up{color:var(--primary)}.dn{color:#ef4444}
+
+/* ─── PANEL ──────────────────────────────────────────────────────────────── */
+.panel-head{
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.panel-title{font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;color:var(--text-dark)}
+.panel-sub{font-size:.78rem;color:var(--text-light);margin-top:2px}
+
+.tabs{display:flex;gap:3px;background:var(--border-light);border-radius:var(--r-md);padding:3px}
+.tab{
+  padding:5px 14px;border-radius:var(--r-sm);font-size:.77rem;font-weight:600;
+  border:none;background:none;cursor:pointer;color:var(--text-light);
+  transition:var(--ease);font-family:'Inter',sans-serif;
+}
+.tab.active{background:var(--card);color:var(--primary);box-shadow:var(--shadow-sm)}
+
+/* ─── DONATION ITEM ──────────────────────────────────────────────────────── */
+.don-item{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--border-light);
+  transition:background .15s;
+  animation:slideIn .28s ease;
+}
+.don-item:last-child{border-bottom:none}
+.don-item:hover{background:var(--border-light)}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+
+.don-icon{
+  width:44px;height:44px;border-radius:var(--r-md);
+  background:rgba(255,202,40,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0;
+}
+.don-info{flex:1;min-width:0}
+.don-name{font-size:.9rem;font-weight:600;color:var(--text-dark);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.don-meta{font-size:.76rem;color:var(--text-light);margin-top:3px}
+.don-date{font-size:.72rem;color:var(--text-light);margin-top:2px;
+  font-family:'Inter',sans-serif}
+
+.don-actions{display:flex;gap:8px;align-items:center;margin-top:8px}
+.don-actions .cta-btn{font-size:.74rem;padding:5px 10px;border-radius:var(--r-sm);}
+
+.d-badge{padding:4px 11px;border-radius:var(--r-full);
+  font-size:.71rem;font-weight:700;letter-spacing:.04em;flex-shrink:0}
+.db-completed{background:rgba(46,125,50,.1);color:var(--primary)}
+.db-pending{background:rgba(255,202,40,.15);color:#b45309}
+.db-cancelled{background:rgba(239,68,68,.08);color:#ef4444}
+
+.empty{padding:40px 20px;text-align:center;color:var(--text-light)}
+.empty i{font-size:2rem;margin-bottom:10px;display:block}
+.empty p{font-size:.9rem}
+.donate-cta{
+  margin-top:12px;padding:10px 20px;
+  background:var(--primary-grad);color:#fff;
+  border:none;border-radius:var(--r-full);
+  font-weight:700;font-size:.85rem;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:var(--ease);box-shadow:var(--shadow-green);
+}
+.donate-cta:hover{transform:translateY(-1px)}
+
+/* ─── TOAST ──────────────────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-md);padding:13px 18px;
+  font-size:.88rem;display:flex;align-items:center;gap:10px;
+  z-index:9999;transform:translateY(90px);opacity:0;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  min-width:230px;max-width:340px;box-shadow:var(--shadow-lg);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-left:4px solid var(--primary)}
+.toast.error{border-left:4px solid #ef4444}
+.toast.info{border-left:4px solid #3b82f6}
+.ti{font-size:1rem}
+.toast.success .ti{color:var(--primary)}.toast.error .ti{color:#ef4444}.toast.info .ti{color:#3b82f6}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){
+  .page-wrap{flex-direction:column;padding:16px}
+  .sidebar{width:100%;position:static}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  #chat-overlay{width:calc(100vw - 32px);right:16px}
+  #chat-toggle{right:16px;bottom:16px;padding:12px 18px}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .topbar{padding:0 16px}
+}
+#avatarInput{display:none}
+
+/* dark-mode form fix */
+body.dark-mode .fl-field input,
+body.dark-mode .fl-field textarea{
+  background:rgba(255,255,255,.05);color:var(--text-dark);border-color:var(--border);
+}
+body.dark-mode .fl-field input:focus,
+body.dark-mode .fl-field textarea:focus{background:rgba(255,255,255,.08)}
+body.dark-mode .tab.active{background:var(--card)}
+body.dark-mode .don-item:hover{background:rgba(255,255,255,.025)}
+body.dark-mode .impact-stat{background:rgba(255,255,255,.04)}
+
+/* ─── BADGE SYSTEM ────────────────────────────────────────────────────────── */
+.donor-badge-pill {
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:var(--r-full);
+  font-size:.74rem;font-weight:800;letter-spacing:.05em;
+  margin-bottom:16px;cursor:default;
+  transition:var(--ease);position:relative;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+.donor-badge-pill:hover{transform:scale(1.04)}
+.donor-badge-pill .badge-icon{font-size:1rem}
+
+/* Tier colours */
+.badge-seed{
+  background:linear-gradient(135deg,rgba(134,239,172,.25),rgba(74,222,128,.15));
+  color:#15803d;border:1.5px solid rgba(74,222,128,.45);
+}
+.badge-sprout{
+  background:linear-gradient(135deg,rgba(110,231,183,.25),rgba(52,211,153,.15));
+  color:#065f46;border:1.5px solid rgba(52,211,153,.45);
+}
+.badge-guardian{
+  background:linear-gradient(135deg,rgba(147,197,253,.25),rgba(96,165,250,.15));
+  color:#1d4ed8;border:1.5px solid rgba(96,165,250,.45);
+}
+.badge-champion{
+  background:linear-gradient(135deg,rgba(196,181,253,.25),rgba(167,139,250,.15));
+  color:#6d28d9;border:1.5px solid rgba(167,139,250,.45);
+}
+.badge-hero{
+  background:linear-gradient(135deg,rgba(253,186,116,.3),rgba(251,146,60,.2));
+  color:#c2410c;border:1.5px solid rgba(251,146,60,.5);
+}
+.badge-legend{
+  background:linear-gradient(135deg,rgba(253,224,71,.3),rgba(250,204,21,.2));
+  color:#854d0e;border:1.5px solid rgba(250,204,21,.6);
+  box-shadow:0 2px 14px rgba(250,204,21,.3);
+}
+.badge-titan{
+  background:linear-gradient(135deg,rgba(244,114,182,.25),rgba(236,72,153,.15));
+  color:#9d174d;border:1.5px solid rgba(236,72,153,.45);
+}
+.badge-immortal{
+  background:linear-gradient(135deg,#ffecd2,#fcb69f);
+  color:#7c2d12;border:1.5px solid rgba(251,146,60,.6);
+  box-shadow:0 0 0 2px rgba(251,146,60,.15),0 4px 20px rgba(251,113,0,.2);
+  animation:immortalGlow 2.5s ease-in-out infinite alternate;
+}
+.badge-none{
+  background:linear-gradient(135deg,rgba(203,213,225,.3),rgba(148,163,184,.16));
+  color:#475569;border:1.5px solid rgba(100,116,139,.35);
+  cursor:pointer;
+}
+.badge-none:hover{transform:scale(1.04)}
+body.dark-mode .badge-none{
+  background:linear-gradient(135deg,rgba(71,85,105,.5),rgba(51,65,85,.42));
+  color:#e2e8f0;
+  border-color:rgba(148,163,184,.6);
+}
+@keyframes immortalGlow{
+  from{box-shadow:0 0 0 2px rgba(251,146,60,.15),0 4px 20px rgba(251,113,0,.2)}
+  to{box-shadow:0 0 0 4px rgba(251,146,60,.35),0 6px 28px rgba(251,113,0,.45)}
+}
+
+/* Badge panel in main */
+.badge-panel-body{padding:20px}
+.badge-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px;
+}
+.badge-card{
+  background:var(--border-light);
+  border-radius:var(--r-lg);
+  border:1.5px solid var(--border);
+  padding:18px 16px;
+  text-align:center;
+  transition:var(--ease);
+  position:relative;overflow:hidden;
+}
+.badge-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.badge-card.earned{border-color:transparent;background:var(--card)}
+.badge-card.locked{opacity:.45;filter:grayscale(.6)}
+.badge-card.earned::before{
+  content:'';position:absolute;inset:0;border-radius:var(--r-lg);
+  background:inherit;z-index:0;
+}
+.badge-emoji{font-size:2.4rem;display:block;margin-bottom:8px;line-height:1}
+.badge-name{
+  font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;
+  color:var(--text-dark);margin-bottom:3px;
+}
+.badge-req{font-size:.72rem;color:var(--text-light);margin-bottom:10px}
+.badge-earned-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:var(--r-full);
+  font-size:.68rem;font-weight:700;letter-spacing:.05em;
+}
+.badge-card.earned .badge-earned-tag{
+  background:rgba(46,125,50,.12);color:var(--primary);
+}
+.badge-card.locked .badge-earned-tag{
+  background:var(--border);color:var(--text-light);
+}
+.badge-current-glow{
+  position:absolute;top:8px;right:8px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--primary);
+  box-shadow:0 0 0 3px rgba(46,125,50,.2);
+  animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(46,125,50,.2)}
+  50%{box-shadow:0 0 0 6px rgba(46,125,50,.08)}
+}
+.badge-progress-bar{
+  height:4px;border-radius:var(--r-full);
+  background:var(--border);overflow:hidden;margin-top:6px;
+}
+.badge-progress-fill{
+  height:100%;border-radius:var(--r-full);
+  background:var(--primary-grad);transition:width 1.2s ease;
+}
+body.dark-mode .badge-card{background:rgba(255,255,255,.04)}
+body.dark-mode .badge-card.earned{background:rgba(255,255,255,.07)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+    <a class="brand" href="index.html" title="FeedLink Home">
+ <svg width="200" height="50" viewBox="0 0 200 50">
+
+  <defs>
+    <!-- 3D Plate Gradients -->
+    <radialGradient id="plateOuter" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#d9d9d9"/>
+    </radialGradient>
+
+    <radialGradient id="plateInner" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ececec"/>
+    </radialGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5"
+                    flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow -->
+    <marker id="arrow"
+            markerWidth="5"
+            markerHeight="5"
+            refX="4"
+            refY="2.5"
+            orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT TEXT (closer) -->
+  <text x="78" y="32"
+        text-anchor="end"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffb300">
+    Second
+  </text>
+
+  <!-- CENTER -->
+  <g transform="translate(100,25)">
+
+    <!-- Rotating Arrows -->
+    <g>
+      <path d="M 0 -20 A 20 20 0 0 1 20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <path d="M 0 20 A 20 20 0 0 1 -20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="360"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </g>
+
+    <!-- Plate Base -->
+    <circle cx="0" cy="0" r="11"
+            fill="url(#plateOuter)"
+            stroke="#cfcfcf"
+            stroke-width="0.8"
+            filter="url(#shadow)"/>
+
+    <!-- Rim -->
+    <circle cx="0" cy="0" r="9"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.8"/>
+
+    <!-- Inner Bowl -->
+    <circle cx="0" cy="0" r="6.5"
+            fill="url(#plateInner)"
+            stroke="#e0e0e0"
+            stroke-width="0.5"/>
+
+  </g>
+
+  <!-- RIGHT TEXT (closer) -->
+  <text x="122" y="32"
+        text-anchor="start"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffffff">
+    Serve
+  </text>
+
+</svg>
+  </a>
+  <div class="topbar-right">
+    <span style="font-size:.88rem;font-weight:600;opacity:.9" id="topName">Donor Dashboard</span>
+    <button class="icon-btn" onclick="toggleDark()" title="Toggle dark mode">
+      <i id="darkIcon" class="fas fa-moon"></i>
+    </button>
+    <button class="cta-btn" onclick="location.href='donate.html'">
+      <i class="fas fa-plus"></i> Donate Food
+    </button>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <!-- ══ SIDEBAR ════════════════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <!-- PROFILE CARD -->
+    <div class="card">
+      <div class="profile-cover">
+        <div class="photo-wrap">
+          <div class="profile-photo" id="profilePhoto" onclick="document.getElementById('avatarInput').click()" title="Click to change photo">
+            <span id="avatarInitial">🤝</span>
+            <img id="avatarImg" src="" alt="Donor" style="display:none"/>
+            <div class="photo-overlay"><i class="fas fa-camera"></i> Change</div>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="avatarInput" accept="image/*">
+
+      <div class="profile-body">
+        <div class="profile-name" id="dispName">Welcome, Donor</div>
+        <div class="profile-sub" id="dispSub"></div>
+        <div class="donor-badge-pill badge-seed" id="badgePill" title="Your current donor tier">
+          <span class="badge-icon" id="badgePillIcon">🌱</span>
+          <span id="badgePillName">Seed Donor</span>
+        </div>
+        <div class="profile-stats">
+          <div class="ps"><span class="ps-val" id="psDon">18</span><span class="ps-lbl">Donations</span></div>
+          <div class="ps"><span class="ps-val" id="psMeals">240</span><span class="ps-lbl">Meals</span></div>
+          <div class="ps"><span class="ps-val" id="psNgos">12</span><span class="ps-lbl">NGOs</span></div>
+        </div>
+      </div>
+
+      <!-- VIEW MODE -->
+      <div id="viewMode">
+        <div class="sec-head">
+          <span class="sec-title">Profile Info</span>
+          <button class="edit-btn" onclick="enterEdit()"><i class="fas fa-pen"></i> Edit</button>
+        </div>
+        <div class="info-rows">
+          <div class="i-row"><i class="fas fa-user"></i><span class="i-val" id="vName">—</span></div>
+          <div class="i-row"><i class="fas fa-envelope"></i><span class="i-val" id="vEmail">—</span></div>
+          <div class="i-row"><i class="fas fa-phone"></i><span class="i-val" id="vPhone">—</span></div>
+          <div class="i-row"><i class="fas fa-map-marker-alt"></i><span class="i-val" id="vAddr">—</span></div>
+          <div class="i-row"><i class="fas fa-briefcase"></i><span class="i-val" id="vOrg">—</span></div>
+        </div>
+      </div>
+
+      <!-- EDIT MODE -->
+      <div id="editMode" style="display:none">
+        <div class="sec-head">
+          <span class="sec-title">Edit Profile</span>
+          <button class="edit-btn" onclick="cancelEdit()" style="color:#ef4444"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+        <div class="profile-form">
+          <div class="fl-field">
+            <label>Full Name</label>
+            <input id="fName" type="text" placeholder="Your full name">
+          </div>
+          <div class="fl-field">
+            <label>Email <i class="fas fa-lock" style="font-size:.6rem;opacity:.6;margin-left:3px"></i></label>
+            <input id="fEmail" type="email" readonly>
+            <div class="lock-note"><i class="fas fa-lock"></i> Registered email — cannot be changed</div>
+          </div>
+          <div class="fl-field">
+            <label>Phone <i class="fas fa-lock" style="font-size:.6rem;opacity:.6;margin-left:3px"></i></label>
+            <input id="fPhone" type="tel" readonly>
+            <div class="lock-note"><i class="fas fa-lock"></i> Verified number — cannot be changed</div>
+          </div>
+          <div class="fl-field">
+            <label>Address</label>
+            <input id="fAddr" type="text" placeholder="Your city / address">
+          </div>
+          <div class="fl-field">
+            <label>Organisation (optional)</label>
+            <input id="fOrg" type="text" placeholder="Restaurant / Company name">
+          </div>
+          <button class="save-btn" id="saveBtn" onclick="saveProfile()">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPACT -->
+    <div class="card">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Your Impact</div>
+          <div class="panel-sub">Monthly progress</div>
+        </div>
+      </div>
+      <div class="impact-body">
+        <div class="prog-row">
+          <div class="prog-label"><span>Meals Goal</span><span class="val" id="mealsPct">—</span></div>
+          <div class="prog-bar"><div class="prog-fill pf-green" id="mealsBar" style="width:0%"></div></div>
+          <div class="prog-note" id="mealsNote">Loading meals data...</div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>NGO Coverage</span><span class="val" id="ngoPct" style="color:#e65100">—</span></div>
+          <div class="prog-bar"><div class="prog-fill pf-orange" id="ngoBar" style="width:0%"></div></div>
+          <div class="prog-note" id="ngoNote">Loading NGO coverage data...</div>
+        </div>
+        <div class="impact-grid">
+          <div class="impact-stat"><span class="iv" id="co2Val">—</span><span class="il">kg CO₂ saved</span></div>
+          <div class="impact-stat"><span class="iv" id="freshVal" style="color:#e65100">—</span><span class="il">Freshness rate</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="card">
+      <div class="panel-head">
+        <div class="panel-title">Top Donors</div>
+        <span style="font-size:.72rem;font-weight:700;color:var(--primary);letter-spacing:.07em">THIS MONTH</span>
+      </div>
+      <div id="leaderboard">
+        <div class="empty">Loading top donors...</div>
+      </div>
+    </div>
+
+    <!-- NAV -->
+    <div class="card">
+      <div class="side-nav">
+        <a class="nav-link active" href="donor-dashboard.html"><i class="fas fa-th-large"></i> Overview</a>
+        <a class="nav-link" href="donate.html"><i class="fas fa-hand-holding-heart"></i> Donate Food</a>
+        <a class="nav-link" href="find-ngo.html"><i class="fas fa-map-marker-alt"></i> Find NGOs</a>
+        <a class="nav-link" href="chat.html" data-chat-toggle="true"><i class="fas fa-comments"></i> Messages</a>
+        <a class="nav-link" href="mailto:secondserveoriginal@gmail.com"><i class="fas fa-file-alt"></i>Impact Reports</a>
+        <button class="nav-link danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN ════════════════════════════════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card sc-green">
+        <div class="s-icon si-g"><i class="fas fa-heart"></i></div>
+        <div class="s-val" id="statDon">—</div>
+        <div class="s-lbl">Total Donations</div>
+      </div>
+      <div class="stat-card sc-orange">
+        <div class="s-icon si-o"><i class="fas fa-utensils"></i></div>
+        <div class="s-val" id="statMeals2">—</div>
+        <div class="s-lbl">Meals Shared</div>
+      </div>
+      <div class="stat-card sc-blue">
+        <div class="s-icon si-b"><i class="fas fa-hands-helping"></i></div>
+        <div class="s-val" id="statNgos">—</div>
+        <div class="s-lbl">NGOs Helped</div>
+      </div>
+      <div class="stat-card sc-purple">
+        <div class="s-icon si-p"><i class="fas fa-check-circle"></i></div>
+        <div class="s-val" id="statRate">—</div>
+        <div class="s-lbl">Pickup Success Rate</div>
+      </div>
+    </div>
+
+    <!-- DONATIONS PANEL -->
+    <div class="card">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">My Donations</div>
+          <div class="panel-sub">Track your food contributions and pickup status</div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" onclick="filterDon('all',this)">All</button>
+          <button class="tab" onclick="filterDon('pending',this)">Pending</button>
+          <button class="tab" onclick="filterDon('completed',this)">Completed</button>
+        </div>
+      </div>
+      <div id="donList">
+        <div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>Loading donations…</p></div>
+      </div>
+    </div>
+
+    <!-- PICKUP REQUESTS PANEL -->
+    <div class="card" id="pickupRequestsCard" style="display:none;">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Pickup Requests</div>
+          <div class="panel-sub">NGO has requested to pick up your donation</div>
+        </div>
+      </div>
+      <div id="pickupRequestsList">
+        <div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>Loading pickup requests…</p></div>
+      </div>
+    </div>
+
+    <!-- BADGES PANEL -->
+    <div class="card">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">🏅 My Badges</div>
+          <div class="panel-sub">Earned through your donation milestones</div>
+        </div>
+        <span style="font-size:.72rem;font-weight:700;color:var(--primary);letter-spacing:.07em" id="badgeEarnedCount">0 / 8 EARNED</span>
+      </div>
+      <div class="badge-panel-body">
+        <div class="badge-grid" id="badgeGrid"></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /page-wrap -->
+
+<button id="chat-toggle" type="button" aria-controls="chat-overlay" aria-expanded="false">
+  <i class="fas fa-comments"></i> Chat
+</button>
+
+<div id="chat-overlay" aria-hidden="true">
+  <iframe src="chat.html" title="Chat popup"></iframe>
+</div>
+
+<div class="toast" id="toast"><span class="ti" id="ti"></span><span id="tm"></span></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   FeedLink Donor Dashboard — backend-ready
+   PATCH /users/profile  • POST /users/avatar  • GET /donations/stats
+   GET /donations/my-donations  •  GET /users/profile
+   ════════════════════════════════════════════════════════════════════════ */
+
+const BASE = (typeof API_CONFIG!=='undefined'?API_CONFIG.BASE_URL:null)
+           || localStorage.getItem('apiBaseUrl') || 'http://localhost:5000/api';
+const TK   = (typeof API_CONFIG!=='undefined'?API_CONFIG.TOKEN_KEY:null) || 'feedlink_auth_token';
+const UK   = (typeof API_CONFIG!=='undefined'?API_CONFIG.USER_KEY :null) || 'feedlink_user_data';
+
+const getToken = ()=>sessionStorage.getItem(TK);
+const getUser  = ()=>{try{return JSON.parse(sessionStorage.getItem(UK));}catch(e){return null;}};
+const clearAuthState = ()=>{
+  sessionStorage.removeItem(TK);
+  sessionStorage.removeItem(UK);
+  sessionStorage.removeItem('userType');
+  sessionStorage.removeItem('userName');
+  sessionStorage.removeItem('userEmail');
+};
+
+function enforceDashboardAccess(expectedType){
+  const token=getToken();
+  const userType=(getUser()||{}).userType || sessionStorage.getItem('userType');
+  if(!token){
+    location.href='login.html';
+    return false;
+  }
+  if(userType && userType!==expectedType){
+    location.href='index.html';
+    return false;
+  }
+  return true;
+}
+
+async function fetchAPI(path,opts={}){
+  const h={'Content-Type':'application/json','Accept':'application/json',...(opts.headers||{})};
+  const tk=getToken();if(tk)h.Authorization=`Bearer ${tk}`;
+  const r=await fetch(BASE+path,{...opts,headers:h});
+  if(r.status===401 || r.status===403){
+    const err=new Error('Unauthorized');
+    err.isAuthError=true;
+    clearAuthState();
+    location.href='login.html';
+    throw err;
+  }
+  if(!r.ok){const t=await r.text();throw new Error(t||r.statusText);}
+  return r.status===204?null:r.json();
+}
+
+async function withFallback(request, fallback){
+  try{
+    return await request;
+  }catch(error){
+    if(error && error.isAuthError) throw error;
+    return fallback;
+  }
+}
+
+function setupChatPopup(){
+  const toggle = document.getElementById('chat-toggle');
+  const overlay = document.getElementById('chat-overlay');
+  if(!toggle || !overlay) return;
+
+  const openChat = (forceOpen) => {
+    const isOpen = overlay.style.display === 'block';
+    const nextOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
+
+    overlay.style.display = nextOpen ? 'block' : 'none';
+    overlay.setAttribute('aria-hidden', String(!nextOpen));
+    toggle.classList.toggle('open', nextOpen);
+    toggle.setAttribute('aria-expanded', String(nextOpen));
+
+    if(nextOpen){
+      const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      const chatIframe = overlay.querySelector('iframe');
+      if(chatIframe && chatIframe.contentWindow){
+        chatIframe.contentWindow.postMessage({ type: 'setTheme', theme: currentTheme }, '*');
+      }
+    }
+  };
+
+  toggle.addEventListener('click', () => openChat());
+
+  document.querySelectorAll('[data-chat-toggle="true"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      openChat(true);
+    });
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if(event.key === 'Escape'){
+      openChat(false);
+    }
+  });
+
+  window.addEventListener('message', function(event){
+    if(event.data === 'closeFeedlinkChat'){
+      openChat(false);
+      return;
+    }
+
+    if(event.data && event.data.type === 'themeChange'){
+      const newTheme = event.data.theme;
+      const isDark = newTheme === 'dark';
+      document.body.classList.toggle('dark-mode', isDark);
+      localStorage.setItem('feedlink_dark', isDark ? '1' : '0');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      const darkIcon = document.getElementById('darkIcon');
+      if(darkIcon){
+        darkIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      }
+    }
+  });
+}
+
+/* ── ESCAPE HTML ── */
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+/* ── SAMPLE DATA ── */
+const SAMPLE={
+  stats:{total:0,meals:0,ngos:0,pickupRate:0},
+  donations:[],
+  topDonors:[]
+};
+
+/* ── STATE ── */
+let allDons=[],donFilter='all', pendingPickupRequests=[], completedPickupRequests=[];
+
+/* ── TOAST ── */
+let _tt;
+function toast(msg,type='success'){
+  const el=document.getElementById('toast');
+  const icons={success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle'};
+  el.className=`toast ${type} show`;
+  document.getElementById('ti').className=`ti fas ${icons[type]}`;
+  document.getElementById('tm').textContent=msg;
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+function showNoBadgeMessage(){
+  toast('Donate to Earn Badges','info');
+}
+
+/* ── DARK MODE ── */
+function toggleDark(){
+  document.body.classList.toggle('dark-mode');
+  const on=document.body.classList.contains('dark-mode');
+  localStorage.setItem('feedlink_dark',on?'1':'0');
+  document.getElementById('darkIcon').className=on?'fas fa-sun':'fas fa-moon';
+}
+function initDark(){
+  if(localStorage.getItem('feedlink_dark')==='1'){
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkIcon').className='fas fa-sun';
+  }
+}
+
+/* ── PROFILE ── */
+function mergedProfile(){
+  const user=getUser()||{};
+  const local=JSON.parse(localStorage.getItem('donorProfile')||'{}');
+  return {...user,...local};
+}
+
+function getProfileLocation(profile){
+  return (profile.address||profile.city||profile.location||'').trim();
+}
+
+function loadProfileUI(){
+  const p=mergedProfile();
+  const name=p.name||p.full_name||sessionStorage.getItem('userName')||'Welcome, Donor';
+  document.getElementById('dispName').textContent=name;
+  document.getElementById('topName').textContent=name;
+  document.getElementById('vName').textContent=name;
+  document.getElementById('vEmail').textContent=p.email||localStorage.getItem('userEmail')||'—';
+  const locationText=getProfileLocation(p);
+  document.getElementById('vPhone').textContent=p.phone||'—';
+  document.getElementById('vAddr').textContent=locationText||'—';
+  document.getElementById('vOrg').textContent=p.org||p.organisation||'—';
+  document.getElementById('dispSub').textContent=p.org||p.organisation||'';
+  if(p.avatar){
+    const img=document.getElementById('avatarImg');
+    img.src=p.avatar;img.style.display='block';
+    document.getElementById('avatarInitial').style.display='none';
+  }
+}
+
+function enterEdit(){
+  const p=mergedProfile();
+  document.getElementById('fName').value=p.name||sessionStorage.getItem('userName')||'';
+  document.getElementById('fEmail').value=p.email||localStorage.getItem('userEmail')||'';
+  const locationText=getProfileLocation(p);
+  document.getElementById('fPhone').value=p.phone||'';
+  document.getElementById('fAddr').value=locationText;
+  document.getElementById('fOrg').value=p.org||p.organisation||'';
+  document.getElementById('viewMode').style.display='none';
+  document.getElementById('editMode').style.display='block';
+}
+
+function cancelEdit(){
+  document.getElementById('editMode').style.display='none';
+  document.getElementById('viewMode').style.display='block';
+}
+
+async function saveProfile(){
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';
+  const fullNameValue=document.getElementById('fName').value.trim();
+  const addressValue=document.getElementById('fAddr').value.trim();
+  const orgValue=document.getElementById('fOrg').value.trim();
+  const payload={
+    fullName:fullNameValue,
+    address:addressValue,
+    org:orgValue,
+  };
+  const loc=JSON.parse(localStorage.getItem('donorProfile')||'{}');
+  localStorage.setItem('donorProfile',JSON.stringify({...loc,...payload,name:fullNameValue,full_name:fullNameValue,city:addressValue,location:addressValue}));
+  sessionStorage.setItem('userName',fullNameValue);
+  const u=getUser()||{};
+  sessionStorage.setItem(UK,JSON.stringify({...u,...payload}));
+  try{
+    await fetchAPI('/users/profile',{method:'PUT',body:JSON.stringify(payload)});
+    toast('Profile updated successfully!','success');
+  }catch(e){toast('Saved locally (connect to sync)','info');}
+  loadProfileUI();cancelEdit();
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> Save Changes';
+}
+
+/* ── AVATAR ── */
+document.getElementById('avatarInput').addEventListener('change',async function(){
+  const file=this.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const data=e.target.result;
+    document.getElementById('avatarImg').src=data;
+    document.getElementById('avatarImg').style.display='block';
+    document.getElementById('avatarInitial').style.display='none';
+    const loc=JSON.parse(localStorage.getItem('donorProfile')||'{}');
+    loc.avatar=data;localStorage.setItem('donorProfile',JSON.stringify(loc));
+    try{
+      const fd=new FormData();fd.append('avatar',file);
+      const tk=getToken();
+      const res=await fetch(BASE+'/users/avatar',{method:'POST',headers:tk?{Authorization:`Bearer ${tk}`}:{},body:fd});
+      if(res.ok){const d=await res.json();if(d.url){loc.avatar=d.url;localStorage.setItem('donorProfile',JSON.stringify(loc));}}
+    }catch(err){}
+    toast('Profile photo updated!','success');
+  };
+  reader.readAsDataURL(file);
+});
+
+/* ── DONATIONS ── */
+function filterDon(f,btn){
+  donFilter=f;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderDons();
+}
+
+function renderDons(){
+  const cont=document.getElementById('donList');
+  const list = donFilter==='all'
+    ? allDons
+    : donFilter==='completed'
+      ? allDons.filter(d=>['completed','claimed'].includes((d.status||'').toLowerCase()))
+      : allDons.filter(d=>d.status===donFilter);
+  const hasPendingRequests=donFilter==='pending' && pendingPickupRequests.length>0;
+
+  if(!list.length && !hasPendingRequests){
+    cont.innerHTML=`<div class="empty">
+      <i class="fas fa-box-open"></i>
+      <p>No ${donFilter==='all'?'':donFilter} donations yet</p>
+      ${donFilter==='all'?'<button class="donate-cta" onclick="location.href=\'donate.html\'"><i class="fas fa-plus"></i> Donate Now</button>':''}
+    </div>`;
+    return;
+  }
+
+  cont.innerHTML='';
+
+  if(hasPendingRequests){
+    pendingPickupRequests.forEach(req=>{
+      const el=document.createElement('div');el.className='don-item';
+      const isPending=req.status==='pending';
+      const hasRequesterId=!!req.requester_id;
+      el.innerHTML=`
+        <div class="don-icon">🤝</div>
+        <div class="don-info">
+          <div class="don-name">Pickup request from ${req.requester_name || 'NGO'}</div>
+          <div class="don-meta">Donation: ${req.donation_title || 'unknown'}<br>${req.message || 'No message provided'}</div>
+          <div class="don-date">${new Date(req.created_at).toLocaleString()}</div>
+        </div>
+        <div class="don-actions">
+          ${isPending ? `<button class="cta-btn" onclick="acceptPickupRequest('${req.id}')">Accept</button><button class="cta-btn" style="background:#f97316;color:#fff;border:none" onclick="rejectPickupRequest('${req.id}')">Reject</button>` : ''}
+          ${hasRequesterId ? `<button class="cta-btn" onclick="openViewerProfile('${req.requester_id}')"><i class="fas fa-chart-line"></i> View NGO</button>` : ''}
+        </div>
+        <span class="d-badge db-${req.status||'pending'}">${(req.status||'pending').charAt(0).toUpperCase()+(req.status||'pending').slice(1)}</span>`;
+      cont.appendChild(el);
+    });
+  }
+
+  list.forEach(d=>{
+    const el=document.createElement('div');el.className='don-item';
+    el.innerHTML=`
+      <div class="don-icon">${d.emoji||'📦'}</div>
+      <div class="don-info">
+        <div class="don-name">${d.title||'Donation'}</div>
+        <div class="don-meta">${d.note||''}</div>
+        <div class="don-date">${d.date||''}</div>
+      </div>
+      <span class="d-badge db-${d.status||'pending'}">${(d.status||'pending').charAt(0).toUpperCase()+(d.status||'pending').slice(1)}</span>`;
+    cont.appendChild(el);
+  });
+}
+
+async function loadPickupRequests(){
+  try{
+    const requests = await withFallback(fetchAPI('/pickups/requests'), []);
+    const allRequests = Array.isArray(requests)?requests:[];
+
+    pendingPickupRequests = allRequests.filter(r=>r.status==='pending');
+    completedPickupRequests = allRequests.filter(r=>r.status!=='pending');
+
+    renderPickupRequests();
+
+    if(allRequests.length){
+      document.getElementById('pickupRequestsCard').style.display='block';
+    } else {
+      document.getElementById('pickupRequestsCard').style.display='none';
+    }
+
+    if(donFilter==='pending'){
+      renderDons();
+    }
+  }catch(e){
+    pendingPickupRequests=[];
+    completedPickupRequests=[];
+    document.getElementById('pickupRequestsCard').style.display='none';
+  }
+}
+
+function renderPickupRequests(){
+  const container=document.getElementById('pickupRequestsList');
+  if(!pendingPickupRequests.length && !completedPickupRequests.length){
+    container.innerHTML='<div class="empty"><i class="fas fa-check-circle"></i><p>No pickup requests</p></div>';
+    return;
+  }
+
+  container.innerHTML='';
+
+  if(pendingPickupRequests.length){
+    const section=document.createElement('div');
+    section.innerHTML=`<h3 style="margin:0 0 8px;font-size:.95rem;color:#1b5e20;">Pending Requests</h3>`;
+    container.appendChild(section);
+    pendingPickupRequests.forEach(req=>{
+      const item=document.createElement('div');item.className='don-item';
+      const hasRequesterId=!!req.requester_id;
+      item.innerHTML=`
+        <div class="don-icon">🤝</div>
+        <div class="don-info">
+          <div class="don-name">${req.donation_title || 'Donation needed'} requested by ${req.requester_name || 'NGO'}</div>
+          <div class="don-meta">Message: ${req.message||'No message'}<br>${new Date(req.created_at).toLocaleString()}</div>
+        </div>
+        <div class="don-actions">
+          <button class="cta-btn" onclick="acceptPickupRequest('${req.id}')">Accept</button>
+          <button class="cta-btn" style="background:#f97316;color:#fff;border:none" onclick="rejectPickupRequest('${req.id}')">Reject</button>
+          ${hasRequesterId ? `<button class="cta-btn" onclick="openViewerProfile('${req.requester_id}')"><i class="fas fa-chart-line"></i> View NGO</button>` : ''}
+        </div>
+        <span class="d-badge db-pending">Pending</span>`;
+      container.appendChild(item);
+    });
+  }
+
+  if(completedPickupRequests.length){
+    const section=document.createElement('div');
+    section.style.marginTop='16px';
+    section.innerHTML=`<h3 style="margin:0 0 8px;font-size:.95rem;color:#0f567e;">Completed/Resolved Requests</h3>`;
+    container.appendChild(section);
+    completedPickupRequests.forEach(req=>{
+      const item=document.createElement('div');item.className='don-item';
+      item.innerHTML=`
+        <div class="don-icon">✅</div>
+        <div class="don-info">
+          <div class="don-name">${req.donation_title || 'Donation needed'} requested by ${req.requester_name || 'NGO'}</div>
+          <div class="don-meta">Message: ${req.message||'No message'}<br>${new Date(req.updated_at||req.created_at).toLocaleString()}</div>
+        </div>
+        <span class="d-badge db-${req.status||'completed'}">${(req.status||'completed').charAt(0).toUpperCase()+(req.status||'completed').slice(1)}</span>`;
+      container.appendChild(item);
+    });
+  }
+}
+
+async function acceptPickupRequest(requestId){
+  try{
+    await fetchAPI(`/pickups/${requestId}/accept`, { method:'PUT' });
+    toast('Pickup request accepted','success');
+    const req = pendingPickupRequests.find(r=>r.id===requestId);
+    pendingPickupRequests = pendingPickupRequests.filter(r=>r.id!==requestId);
+    if(req){
+      completedPickupRequests.unshift({...req,status:'accepted',updated_at:new Date().toISOString()});
+      if(req.donation_id){
+        allDons = allDons.map(d => {
+          if(d.id===req.donation_id){
+            return {...d, status:'completed', note:`Picked up by ${req.requester_name || 'NGO'}`};
+          }
+          return d;
+        });
+      }
+    }
+    renderPickupRequests();
+    renderDons();
+    await loadDashboard();
+    await loadPickupRequests();
+  }catch(e){
+    toast('Unable to accept request','error');
+  }
+}
+
+async function rejectPickupRequest(requestId){
+  try{
+    await fetchAPI(`/pickups/${requestId}/reject`, { method:'PUT' });
+    toast('Pickup request rejected','info');
+    const req = pendingPickupRequests.find(r=>r.id===requestId);
+    pendingPickupRequests = pendingPickupRequests.filter(r=>r.id!==requestId);
+    if(req){
+      completedPickupRequests.unshift({...req,status:'rejected',updated_at:new Date().toISOString()});
+    }
+    renderPickupRequests();
+    renderDons();
+    await loadDashboard();
+    await loadPickupRequests();
+  }catch(e){
+    toast('Unable to reject request','error');
+  }
+}
+
+/* ── RENDER TOP DONORS ── */
+function renderTopDonors(donors){
+  const lb=document.getElementById('leaderboard');
+  
+  // Handle wrapped response format { success: true, data: [...] } or { data: [...] }
+  let donorList = donors;
+  if(donors && !Array.isArray(donors)){
+    donorList = donors.data || donors.donors || [];
+  }
+  
+  if(!Array.isArray(donorList)||!donorList.length){
+    lb.innerHTML='<div class="empty">No donors yet</div>';
+    return;
+  }
+  
+  lb.innerHTML=donorList.slice(0,5).map((donor,i)=>{
+    const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1).toString();
+    const isYou=donor.name==='You'||donor.name.toLowerCase().includes('you');
+    const donationCount = donor.donations || 0;
+    const donationLabel = donationCount === 1 ? 'donation' : 'donations';
+    const canOpenProfile = !!donor.id;
+    return `<div class="lb-item">
+      <div class="lb-rank ${i<3?'gold':''}">${rank}</div>
+      <div class="lb-name ${canOpenProfile ? 'clickable' : ''}" ${canOpenProfile ? `onclick="openViewerProfile('${donor.id}')" title="View profile"` : ''}>${escapeHtml(donor.name || 'Anonymous')}${isYou?'<span class="you-tag">you</span>':''}</div>
+      <div class="lb-val">${donationCount} ${donationLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+function openViewerProfile(userId){
+  if(!userId) return;
+  location.href='viewer-dashboard.html?userId='+encodeURIComponent(userId);
+}
+
+/* ── DASHBOARD LOAD ── */
+async function loadDashboard(){
+  try{
+    const stats=await withFallback(fetchAPI('/donations/stats'), SAMPLE.stats);
+    if(stats){
+      document.getElementById('statDon').textContent   =stats.total     ??'—';
+      renderBadges(stats.total||0);
+      document.getElementById('statMeals2').textContent=stats.meals     ??'—';
+      document.getElementById('statNgos').textContent  =stats.ngos      ??'—';
+      document.getElementById('statRate').textContent  =(stats.pickupRate??'—')+(stats.pickupRate?'%':'');
+      document.getElementById('psDon').textContent     =stats.total     ??'—';
+      document.getElementById('psMeals').textContent   =stats.meals     ??'—';
+      document.getElementById('psNgos').textContent    =stats.ngos      ??'—';
+      if(stats.mealsGoal){
+        const pct=Math.min(100,Math.round(stats.meals/stats.mealsGoal*100));
+        document.getElementById('mealsPct').textContent=pct+'%';
+        document.getElementById('mealsBar').style.width=pct+'%';
+        document.getElementById('mealsNote').textContent=`${stats.meals} of ${stats.mealsGoal} meals this month`;
+      }
+    }
+    const dons=await withFallback(fetchAPI('/donations/my-donations'), SAMPLE.donations);
+    allDons=Array.isArray(dons)?dons:SAMPLE.donations;
+    renderDons();
+
+    // Load impact data
+    const impact=await withFallback(fetchAPI('/donations/impact'), {co2Saved:42,freshnessRate:98,totalMeals:0});
+    if(impact){
+      document.getElementById('co2Val').textContent=impact.co2Saved||'—';
+      document.getElementById('freshVal').textContent=(impact.freshnessRate||'—')+(impact.freshnessRate?'%':'');
+      // Update meals goal with real data
+      if(impact.totalMeals !== undefined && stats.mealsGoal){
+        const pct=Math.min(100,Math.round(impact.totalMeals/stats.mealsGoal*100));
+        document.getElementById('mealsPct').textContent=pct+'%';
+        document.getElementById('mealsBar').style.width=pct+'%';
+        document.getElementById('mealsNote').textContent=`${impact.totalMeals} of ${stats.mealsGoal} meals this month`;
+      }
+      // Update NGO coverage with real data
+      if(impact.ngoCoverage !== undefined){
+        document.getElementById('ngoPct').textContent=impact.ngoCoverage+'%';
+        document.getElementById('ngoBar').style.width=impact.ngoCoverage+'%';
+        const coverageNote = impact.totalNgos ? `${impact.ngosReached} of ${impact.totalNgos} local NGOs reached` : 'NGO coverage data';
+        document.getElementById('ngoNote').textContent=coverageNote;
+      }
+    }
+
+    // Load top donors
+    const topDonors=await withFallback(fetchAPI('/donations/top-donors'), SAMPLE.topDonors||[]);
+    renderTopDonors(topDonors);
+
+    // Hydrate profile
+    const user=await withFallback(fetchAPI('/users/profile'), null);
+    if(user){
+      const loc=JSON.parse(localStorage.getItem('donorProfile')||'{}');
+      localStorage.setItem('donorProfile',JSON.stringify({avatar:loc.avatar,...user}));
+      sessionStorage.setItem(UK,JSON.stringify({...getUser(),...user}));
+      // Update userName in localStorage if we got fresh data
+      if(user.full_name){
+        sessionStorage.setItem('userName', user.full_name);
+      }
+    }
+    loadProfileUI();
+    await loadPickupRequests();
+  }catch(e){
+    if(e && e.isAuthError) return;
+    allDons=SAMPLE.donations;
+    document.getElementById('statDon').textContent   =SAMPLE.stats.total;
+    renderBadges(SAMPLE.stats.total);
+    document.getElementById('statMeals2').textContent=SAMPLE.stats.meals;
+    document.getElementById('statNgos').textContent  =SAMPLE.stats.ngos;
+    document.getElementById('statRate').textContent  =SAMPLE.stats.pickupRate+'%';
+    document.getElementById('psDon').textContent     =SAMPLE.stats.total;
+    document.getElementById('psMeals').textContent   =SAMPLE.stats.meals;
+    document.getElementById('psNgos').textContent    =SAMPLE.stats.ngos;
+    renderDons();loadProfileUI();
+    await loadPickupRequests();
+  }
+}
+
+/* ── POLLING ── */
+let _poll;
+function startPoll(){if(_poll)return;_poll=setInterval(loadDashboard,15000);}
+function stopPoll(){if(_poll){clearInterval(_poll);_poll=null;}}
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)stopPoll();else{loadDashboard();startPoll();}
+});
+
+
+/* ── BADGE SYSTEM ── */
+const BADGES = [
+  { id:'seed',      emoji:'🌱', name:'Seed Donor',     req:1,   cssClass:'badge-seed',     desc:'First donation made!' },
+  { id:'sprout',    emoji:'🌿', name:'Sprout',          req:5,   cssClass:'badge-sprout',   desc:'5 donations completed' },
+  { id:'guardian',  emoji:'🛡️', name:'Food Guardian',  req:10,  cssClass:'badge-guardian', desc:'10 donations completed' },
+  { id:'champion',  emoji:'⚡', name:'Champion',        req:25,  cssClass:'badge-champion', desc:'25 donations completed' },
+  { id:'hero',      emoji:'🔥', name:'Community Hero',  req:50,  cssClass:'badge-hero',     desc:'50 donations completed' },
+  { id:'legend',    emoji:'⭐', name:'Legend',           req:100, cssClass:'badge-legend',   desc:'100 donations completed' },
+  { id:'titan',     emoji:'💎', name:'Titan',            req:200, cssClass:'badge-titan',    desc:'200 donations completed' },
+  { id:'immortal',  emoji:'👑', name:'Immortal Giver',  req:500, cssClass:'badge-immortal', desc:'500 donations — the pinnacle!' },
+];
+
+function getCurrentBadge(donationCount){
+  if(donationCount < BADGES[0].req) return null;
+  let current = BADGES[0];
+  for(const b of BADGES){
+    if(donationCount >= b.req) current = b;
+    else break;
+  }
+  return current;
+}
+
+function getNextBadge(donationCount){
+  for(const b of BADGES){
+    if(donationCount < b.req) return b;
+  }
+  return null;
+}
+
+function renderBadges(donationCount){
+  const grid = document.getElementById('badgeGrid');
+  const pill  = document.getElementById('badgePill');
+  const pillIcon = document.getElementById('badgePillIcon');
+  const pillName = document.getElementById('badgePillName');
+  if(!grid) return;
+
+  const current   = getCurrentBadge(donationCount);
+  const nextBadge = getNextBadge(donationCount);
+
+  if(current){
+    pill.style.display = 'inline-flex';
+    pill.className = 'donor-badge-pill ' + current.cssClass;
+    pillIcon.textContent = current.emoji;
+    pillName.textContent  = current.name;
+    pill.onclick = null;
+    pill.onkeydown = null;
+    pill.removeAttribute('role');
+    pill.removeAttribute('tabindex');
+    pill.removeAttribute('aria-label');
+  }else{
+    pill.style.display = 'inline-flex';
+    pill.className = 'donor-badge-pill badge-none';
+    pillIcon.textContent = '🔒';
+    pillName.textContent  = 'No Badge';
+    pill.onclick = showNoBadgeMessage;
+    pill.onkeydown = (event)=>{
+      if(event.key==='Enter' || event.key===' '){
+        event.preventDefault();
+        showNoBadgeMessage();
+      }
+    };
+    pill.setAttribute('role','button');
+    pill.setAttribute('tabindex','0');
+    pill.setAttribute('aria-label','No Badge. Donate to Earn Badges');
+  }
+
+  const earned = BADGES.filter(b => donationCount >= b.req).length;
+  document.getElementById('badgeEarnedCount').textContent = earned + ' / ' + BADGES.length + ' EARNED';
+
+  const bgMap = {
+    'badge-seed':     'linear-gradient(135deg,rgba(134,239,172,.2),rgba(74,222,128,.1))',
+    'badge-sprout':   'linear-gradient(135deg,rgba(110,231,183,.2),rgba(52,211,153,.1))',
+    'badge-guardian': 'linear-gradient(135deg,rgba(147,197,253,.2),rgba(96,165,250,.1))',
+    'badge-champion': 'linear-gradient(135deg,rgba(196,181,253,.2),rgba(167,139,250,.1))',
+    'badge-hero':     'linear-gradient(135deg,rgba(253,186,116,.25),rgba(251,146,60,.15))',
+    'badge-legend':   'linear-gradient(135deg,rgba(253,224,71,.25),rgba(250,204,21,.15))',
+    'badge-titan':    'linear-gradient(135deg,rgba(244,114,182,.2),rgba(236,72,153,.1))',
+    'badge-immortal': 'linear-gradient(135deg,#ffecd2,#fcb69f)',
+  };
+  const borderMap = {
+    'badge-seed':     'rgba(74,222,128,.45)',
+    'badge-sprout':   'rgba(52,211,153,.45)',
+    'badge-guardian': 'rgba(96,165,250,.45)',
+    'badge-champion': 'rgba(167,139,250,.45)',
+    'badge-hero':     'rgba(251,146,60,.5)',
+    'badge-legend':   'rgba(250,204,21,.6)',
+    'badge-titan':    'rgba(236,72,153,.45)',
+    'badge-immortal': 'rgba(251,146,60,.6)',
+  };
+
+  grid.innerHTML = '';
+  BADGES.forEach(function(b) {
+    const isEarned  = donationCount >= b.req;
+    const isCurrent = current ? b.id === current.id : false;
+    const isNext    = nextBadge && b.id === nextBadge.id;
+    const progress  = isNext ? Math.min(100, Math.round((donationCount / b.req) * 100)) : 0;
+
+    const card = document.createElement('div');
+    card.className = 'badge-card ' + (isEarned ? 'earned' : 'locked');
+    if(isEarned){
+      card.style.background   = bgMap[b.cssClass] || 'var(--border-light)';
+      card.style.borderColor  = borderMap[b.cssClass] || 'var(--border)';
+    }
+
+    card.innerHTML =
+      (isCurrent ? '<div class="badge-current-glow"></div>' : '') +
+      '<span class="badge-emoji">' + b.emoji + '</span>' +
+      '<div class="badge-name">' + b.name + '</div>' +
+      '<div class="badge-req">' + (b.req === 1 ? '1 donation' : b.req + '+ donations') + '</div>' +
+      '<span class="badge-earned-tag">' +
+        (isEarned ? '<i class="fas fa-check"></i> Earned' : '🔒 Locked') +
+      '</span>' +
+      (isNext && !isEarned ? '<div class="badge-progress-bar" style="margin-top:8px"><div class="badge-progress-fill" style="width:' + progress + '%"></div></div><div style="font-size:.65rem;color:var(--text-light);margin-top:4px">' + donationCount + ' / ' + b.req + ' &mdash; ' + progress + '%</div>' : '');
+
+    grid.appendChild(card);
+  });
+}
+
+/* ── LOGOUT ── */
+async function logout(){
+  try{await fetchAPI('/auth/logout',{method:'POST'});}catch(e){}
+  clearAuthState();
+  location.href='login.html';
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  if(!enforceDashboardAccess('donor')) return;
+  initDark();
+  setupChatPopup();
+  loadProfileUI();
+  renderBadges(0);
+  loadDashboard().then(startPoll);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+/* ===== LOGIN PAGE STYLES ===== */
+
+/* Donor type field animation */
+.donor-type-field {
+    display: none;
+    overflow: hidden;
+    animation: slideDown 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.donor-type-field.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form group */
+.form-group {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-medium);
+    letter-spacing: 0.01em;
+}
+
+/* Info text */
+.info-text {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+/* Login form header */
+.login-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.login-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+}
+
+.login-header p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* Login submit button */
+.login-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.25);
+}
+
+.login-submit:hover {
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    box-shadow: 0 8px 28px rgba(46, 125, 50, 0.35);
+    transform: translateY(-2px);
+}
+
+.login-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Forgot password link */
+.forgot-pass {
+    color: var(--primary-color);
+    font-size: 0.88rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.forgot-pass:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Role selector */
+#userType {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232e7d32' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    min-height: 48px;
+    text-overflow: ellipsis;
+}
+body.dark-mode select {
+    background-color: #1e1e2e !important;
+    color: #ffffff !important;
+    border: 1px solid #555 !important;
+    color-scheme: dark;
+}
+
+body.dark-mode select option {
+    background-color: #1e1e2e !important;
+    color: #ffffff !important;
+}
+
+/* ==========================================================================
+   DARK MODE — login page inputs & selects
+   Ensures all form fields match the dark card background,
+   not the default white/light state.
+   ========================================================================== */
+
+/* All inputs and selects inside the login form */
+body.dark-mode .auth-box form input,
+body.dark-mode .auth-box form select {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--border-color);
+    color: var(--text-dark);
+}
+
+body.dark-mode .auth-box form input::placeholder {
+    color: var(--text-light);
+}
+
+body.dark-mode .auth-box form input:focus,
+body.dark-mode .auth-box form select:focus {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.15);
+}
+
+/* Dropdown arrow colour in dark mode */
+body.dark-mode #userType {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2366bb6a' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+}
+
+/* Password wrapper — keep transparent so parent bg shows */
+body.dark-mode .auth-box .password-input-wrapper input {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 768px) {
+    .login-header {
+        margin-bottom: 24px;
+    }
+
+    .login-header h2 {
+        font-size: 1.45rem;
+    }
+
+    .login-header p {
+        font-size: 0.9rem;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .login-submit {
+        min-height: 48px;
+        font-size: 0.97rem;
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: -2px;
+        margin-bottom: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    #userType {
+        font-size: 16px;
+        background-position: right 12px center;
+        padding-right: 38px;
+    }
+
+    .login-header {
+        margin-bottom: 20px;
+    }
+
+    .login-header h2 {
+        font-size: 1.28rem;
+        line-height: 1.3;
+    }
+
+    .login-header p {
+        font-size: 0.86rem;
+    }
+
+    .forgot-pass {
+        font-size: 0.84rem;
+    }
+
+    .login-submit {
+        min-height: 46px;
+        padding: 13px;
+    }
+}

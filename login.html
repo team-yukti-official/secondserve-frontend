@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Second Serve & Second Smile</title>
+    <link rel="stylesheet" href="style/all.css">
+    <script>document.documentElement.classList.add('page-is-entering');</script>
+    <link rel="stylesheet" href="style/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <a href="index.html" class="logo">
+
+                  <svg width="200" height="50" viewBox="0 0 200 50">
+
+  <defs>
+    <!-- 3D Plate Gradients -->
+    <radialGradient id="plateOuter" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#d9d9d9"/>
+    </radialGradient>
+
+    <radialGradient id="plateInner" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ececec"/>
+    </radialGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5"
+                    flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow -->
+    <marker id="arrow"
+            markerWidth="5"
+            markerHeight="5"
+            refX="4"
+            refY="2.5"
+            orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT TEXT (closer) -->
+  <text x="78" y="32"
+        text-anchor="end"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffb300">
+    Second
+  </text>
+
+  <!-- CENTER -->
+  <g transform="translate(100,25)">
+
+    <!-- Rotating Arrows -->
+    <g>
+      <path d="M 0 -20 A 20 20 0 0 1 20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <path d="M 0 20 A 20 20 0 0 1 -20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="360"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </g>
+
+    <!-- Plate Base -->
+    <circle cx="0" cy="0" r="11"
+            fill="url(#plateOuter)"
+            stroke="#cfcfcf"
+            stroke-width="0.8"
+            filter="url(#shadow)"/>
+
+    <!-- Rim -->
+    <circle cx="0" cy="0" r="9"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.8"/>
+
+    <!-- Inner Bowl -->
+    <circle cx="0" cy="0" r="6.5"
+            fill="url(#plateInner)"
+            stroke="#e0e0e0"
+            stroke-width="0.5"/>
+
+  </g>
+
+  <!-- RIGHT TEXT (closer) -->
+  <text x="122" y="32"
+        text-anchor="start"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffffff">
+    Serve
+  </text>
+
+</svg>
+
+                </a>
+            </div>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="signup.html" class="nav-link login-btn">Sign Up</a>
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+            <!-- Hamburger Button (mobile only) -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+    <section class="auth-box">
+        <h2><i class="fas fa-sign-in-alt"></i> Login to Second Serve</h2>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="userType">I am a:</label>
+                <select id="userType" required>
+                    <option value="">-- Select Role --</option>
+                    <option value="donor">Food Donor</option>
+                    <option value="ngo">NGO / Organization</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="email" placeholder="Email Address" aria-label="Email Address" required>
+            </div>
+
+            <div class="form-group">
+                <div class="password-input-wrapper">
+                    <input type="password" id="passwordInput" placeholder="Password" aria-label="Password" required minlength="8" maxlength="12">
+                    <button type="button" class="password-toggle-btn" id="passwordToggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <a href="forgot-password.html" class="forgot-pass">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="login-submit"><i class="fas fa-lock"></i> Login</button>
+            <p>New user? <a href="signup.html">Sign up here</a></p>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Second Serve & Second Smile | All Rights Reserved | Recovering Food, Feeding Hope</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script/api-config.js"></script>
+    <script src="script/api-utils.js"></script>
+    
+    <script src="script/shared-utils.js"></script>
+    <script src="script/login.js"></script>
+    <script src="script/all.js"></script>
+</body>
+
+</html>

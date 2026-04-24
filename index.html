@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Serve | Recover Food, Feed Lives</title>
+    <link rel="stylesheet" href="style/all.css">
+    <script>document.documentElement.classList.add('page-is-entering');</script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <a href="index.html" class="logo">
+<svg width="200" height="50" viewBox="0 0 200 50">
+
+  <defs>
+    <!-- 3D Plate Gradients -->
+    <radialGradient id="plateOuter" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#d9d9d9"/>
+    </radialGradient>
+
+    <radialGradient id="plateInner" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ececec"/>
+    </radialGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5"
+                    flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow -->
+    <marker id="arrow"
+            markerWidth="5"
+            markerHeight="5"
+            refX="4"
+            refY="2.5"
+            orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT TEXT (closer) -->
+  <text x="78" y="32"
+        text-anchor="end"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffb300">
+    Second
+  </text>
+
+  <!-- CENTER -->
+  <g transform="translate(100,25)">
+
+    <!-- Rotating Arrows -->
+    <g>
+      <path d="M 0 -20 A 20 20 0 0 1 20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <path d="M 0 20 A 20 20 0 0 1 -20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="360"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </g>
+
+    <!-- Plate Base -->
+    <circle cx="0" cy="0" r="11"
+            fill="url(#plateOuter)"
+            stroke="#cfcfcf"
+            stroke-width="0.8"
+            filter="url(#shadow)"/>
+
+    <!-- Rim -->
+    <circle cx="0" cy="0" r="9"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.8"/>
+
+    <!-- Inner Bowl -->
+    <circle cx="0" cy="0" r="6.5"
+            fill="url(#plateInner)"
+            stroke="#e0e0e0"
+            stroke-width="0.5"/>
+
+  </g>
+
+  <!-- RIGHT TEXT (closer) -->
+  <text x="122" y="32"
+        text-anchor="start"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffffff">
+    Serve
+  </text>
+
+</svg>
+
+                </a>
+            </div>
+            <nav class="nav-menu">
+                <a href="#food-listings" class="nav-link">Find Food</a>
+                <a href="donate.html" class="nav-link" onclick="if(typeof AuthManager!=='undefined'&&!AuthManager.isLoggedIn()){event.preventDefault();sessionStorage.setItem('redirectAfterLogin','/donate.html');window.location.href='login.html';}">Donate Food</a>
+                <a href="find-ngo.html" class="nav-link">Find NGOs</a>
+                <a href="volunteer.html" class="nav-link">Volunteer</a>
+                <a href="heart.html" class="nav-link">Smile</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="login.html" class="nav-link login-btn" data-label="Join"><i class="fas fa-user"></i>Join</a>
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+            <!-- Hamburger Button (mobile only) -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+    <!-- Chat Toggle -->
+    <button id="chat-toggle"><i class="fas fa-comments"></i> Chat</button>
+
+    <!-- Overlay -->
+    <div id="chat-overlay">
+        <iframe src="chat.html"></iframe>
+    </div>
+
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg hero-bg-ring" aria-hidden="true"></div>
+        <div class="hero-bg hero-bg-glow hero-bg-glow-left" aria-hidden="true"></div>
+        <div class="hero-bg hero-bg-glow hero-bg-glow-right" aria-hidden="true"></div>
+        <div class="hero-bg hero-bg-grid" aria-hidden="true"></div>
+        <div class="hero-particles" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="hero-content">
+            <h1>Collect. Connect. Care.<br></h1>
+            <p>Connect food donors with verified NGOs to reduce wastage, fight hunger, and build a sustainable future.
+            </p>
+            <div class="hero-buttons">
+                <a href="donate.html" onclick="if(typeof AuthManager!=='undefined'&&!AuthManager.isLoggedIn()){event.preventDefault();sessionStorage.setItem('redirectAfterLogin','/donate.html');window.location.href='login.html';}"><button class="primary-btn"><i class="fas fa-hand-holding-heart"></i> Donate
+                        Food</button></a>
+                <a href="find-ngo.html"><button class="secondary-btn"><i class="fas fa-search"></i> Find
+                        NGOs</button></a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <h4><i class="fas fa-spinner fa-spin" style="font-size: 0.8em;"></i> Loading...</h4>
+                    <p>Meals Distributed</p>
+                </div>
+                <div class="stat-item">
+                    <h4><i class="fas fa-spinner fa-spin" style="font-size: 0.8em;"></i> Loading...</h4>
+                    <p>Active NGOs</p>
+                </div>
+                <div class="stat-item">
+                    <h4><i class="fas fa-spinner fa-spin" style="font-size: 0.8em;"></i> Loading...</h4>
+                    <p>Donors</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="section-container">
+            <h2>How Your Food Reaches Those in Need</h2>
+            <p class="section-subtitle">Turning Excess into Hope</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-camera"></i></div>
+                    <h3>Post Food Details</h3>
+                    <p>Donors upload food details, quantity, expiry time, and location with photos.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-bell"></i></div>
+                    <h3>NGOs Get Notified</h3>
+                    <p>Nearby verified NGOs receive real-time alerts and can accept requests instantly.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-truck"></i></div>
+                    <h3>Pickup & Distribute</h3>
+                    <p>Food is collected and served to those in need within the safe time window.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-star"></i></div>
+                    <h3>Get Recognition</h3>
+                    <p>Donors earn badges and impact reports showing their contribution to society.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Available Food Listings -->
+    <section class="food-listings" id="food-listings">
+        <div class="section-container">
+            <h2>Featured Food Donations</h2>
+            <p class="section-subtitle">Fresh opportunities to make a difference</p>
+            <div class="food-grid" id="foodGrid">
+                <!-- Food cards will be loaded dynamically from backend -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: var(--primary-color);"></i>
+                    <p style="margin-top: 10px; color: var(--text-light);">Loading food donations...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Location Map -->
+    <section class="map-section">
+        <div class="section-container">
+            <h2>Find NGOs & Donors Near You</h2>
+            <p class="section-subtitle">Discover connected NGOs and donors in your locality</p>
+            <div class="map-container">
+                <div id="nearbyMap" style="height: 500px; border-radius: 10px; overflow: hidden;"></div>
+                <div class="location-stats">
+                    <button class="location-btn" id="loadLocationBtn">
+                        <i class="fas fa-location-dot"></i> Locate Nearby NGOs & Donors
+                    </button>
+                    <div class="live-map-panel">
+                        <div class="live-map-head">
+                            <div>
+                                <span class="live-map-kicker">Live Rescue Network</span>
+                                <h3>Nearby help from your current location</h3>
+                            </div>
+                            <div class="location-fetch-indicator" id="locationFetchIndicator">
+                                <span class="pulse-dot"></span>
+                                <span id="mapStatusText">Waiting for location access</span>
+                            </div>
+                        </div>
+                        <div class="stats-grid live-stats-grid">
+                            <article class="stat-card stat-card-ngo">
+                                <span class="stat-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                                <div class="stat-copy">
+                                    <p>Nearby NGOs</p>
+                                    <h4 id="ngoCount">0</h4>
+                                    <small>Live count from your backend near your location</small>
+                                </div>
+                            </article>
+                            <article class="stat-card stat-card-donor">
+                                <span class="stat-icon"><i class="fas fa-box-open"></i></span>
+                                <div class="stat-copy">
+                                    <p>Active Donors</p>
+                                    <h4 id="donorCount">0</h4>
+                                    <small>Backend-connected donors around you right now</small>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="section-container">
+            <h2>Impact Stories</h2>
+            <p class="section-subtitle">Real stories from our community</p>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Second Serve & Second Smile helped us reduce food waste significantly. The process is
+                        seamless and the NGOs are so appreciative!"</p>
+                    <p class="testimonial-author">- XXX XXX, Restaurant Owner</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"As an NGO, this platform has made it incredibly easy to source healthy
+                        meals for our beneficiaries quickly."</p>
+                    <p class="testimonial-author">- XXX XXX, NGO Director</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Supporting my community has never been easier. I feel proud knowing my
+                        donations are making a real difference."</p>
+                    <p class="testimonial-author">- XXX XXX, Generous Donor</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="section-container">
+            <h2>About Second Serve & Second Smile</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Second Serve & Second Smile is a community-driven platform dedicated to bridging the gap between food donors and
+                        NGOs working to eliminate hunger. We believe that no food should go to waste when communities
+                        need it most.</p>
+                    <p>Our mission is to create a sustainable ecosystem where surplus food from restaurants, households,
+                        and food businesses reaches those in need, reducing food waste and fighting malnutrition across
+                        the country.</p>
+                    <div class="about-values">
+                        <div class="value">
+                            <h4><i class="fas fa-heart"></i> Compassion</h4>
+                            <p>Caring for every person's wellbeing</p>
+                        </div>
+                        <div class="value">
+                            <h4><i class="fas fa-leaf"></i> Sustainability</h4>
+                            <p>Reducing waste for a better planet</p>
+                        </div>
+                        <div class="value">
+                            <h4><i class="fas fa-hands-helping"></i> Transparency</h4>
+                            <p>Building trust through honest communication</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="script/api-config.js"></script>
+    <script src="script/api-utils.js"></script>
+    <script src="script/api-extended.js"></script>
+    <script src="script/shared-utils.js"></script>
+    <script src="script/auth-manager.js"></script>
+    <script src="script/index-handler.js"></script>
+    <script src="script/nearby-map.js"></script>
+    <script src="script/all.js"></script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Second Serve</h4>
+                    <p>Reducing food waste, feeding hope.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="donate.html">Donate Food</a></li>
+                        <li><a href="find-ngo.html">Find NGOs</a></li>
+                        <li><a href="#food-listings">Find Food</a></li>
+                        <li><a href="volunteer.html">Volunteer</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="mailto:secondserveoriginal@gmail.com">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+             <div class="footer-col badge-section">
+            <h4>BECOME A HERO</h4>
+            <p>Earn badges by helping reduce food waste.</p>
+
+            <div class="badge-list">
+                <div class="badge-item bronze">
+                    🥉 <span>Bronze</span>
+                    <small>5 Donations</small>
+                </div>
+
+                <div class="badge-item silver">
+                    🥈 <span>Silver</span>
+                    <small>20 Donations</small>
+                </div>
+
+                <div class="badge-item gold">
+                    🥇 <span>Gold</span>
+                    <small>50 Donations</small>
+                </div>
+            </div>
+
+            <button class="earn-btn" onclick="if(typeof AuthManager!=='undefined'&&!AuthManager.isLoggedIn()){sessionStorage.setItem('redirectAfterLogin','/donate.html');window.location.href='login.html';}else{window.location.href='donate.html';}">Start Earning</button>
+             </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Second Serve & Second Smile | All Rights Reserved | Recovering Food, Feeding Hope</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

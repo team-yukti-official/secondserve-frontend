@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Second Serve & Second Smile</title>
+    <link rel="stylesheet" href="style/all.css">
+    <script>document.documentElement.classList.add('page-is-entering');</script>
+    <link rel="stylesheet" href="style/signup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <a href="index.html" class="logo">
+                   <svg width="200" height="50" viewBox="0 0 200 50">
+
+  <defs>
+    <!-- 3D Plate Gradients -->
+    <radialGradient id="plateOuter" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#d9d9d9"/>
+    </radialGradient>
+
+    <radialGradient id="plateInner" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ececec"/>
+    </radialGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5"
+                    flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow -->
+    <marker id="arrow"
+            markerWidth="5"
+            markerHeight="5"
+            refX="4"
+            refY="2.5"
+            orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT TEXT (closer) -->
+  <text x="78" y="32"
+        text-anchor="end"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffb300">
+    Second
+  </text>
+
+  <!-- CENTER -->
+  <g transform="translate(100,25)">
+
+    <!-- Rotating Arrows -->
+    <g>
+      <path d="M 0 -20 A 20 20 0 0 1 20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <path d="M 0 20 A 20 20 0 0 1 -20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="360"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </g>
+
+    <!-- Plate Base -->
+    <circle cx="0" cy="0" r="11"
+            fill="url(#plateOuter)"
+            stroke="#cfcfcf"
+            stroke-width="0.8"
+            filter="url(#shadow)"/>
+
+    <!-- Rim -->
+    <circle cx="0" cy="0" r="9"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.8"/>
+
+    <!-- Inner Bowl -->
+    <circle cx="0" cy="0" r="6.5"
+            fill="url(#plateInner)"
+            stroke="#e0e0e0"
+            stroke-width="0.5"/>
+
+  </g>
+
+  <!-- RIGHT TEXT (closer) -->
+  <text x="122" y="32"
+        text-anchor="start"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffffff">
+    Serve
+  </text>
+
+</svg>
+                </a>
+            </div>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="login.html" class="nav-link login-btn">Login</a>
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <section class="auth-box">
+        <div class="signup-header">
+            <h2><i class="fas fa-user-plus"></i> Create Your Account</h2>
+            <p>Join Second Serve and make a difference in your community</p>
+        </div>
+
+        <form id="signupForm">
+
+            <!-- Role -->
+            <div class="form-group">
+                <label for="userType">I am a:</label>
+                <select id="userType" required>
+                    <option value="">-- Select Role --</option>
+                    <option value="donor">Food Donor</option>
+                    <option value="ngo">NGO / Organization</option>
+                </select>
+                <p class="info-text">Choose your role to continue</p>
+            </div>
+
+            <!-- Donor type -->
+            <div class="form-group donor-type-field" id="donorTypeField">
+                <label for="donorType">Donor Type:</label>
+                <select id="donorType">
+                    <option value="">-- Select Donor Type --</option>
+                    <option value="restaurant">🍽️ Restaurant / Cafe</option>
+                    <option value="household">🏠 Household</option>
+                    <option value="event">🎉 Event / Party</option>
+                    <option value="hotel">🏨 Hotel / Catering</option>
+                    <option value="bakery">🥐 Bakery</option>
+                    <option value="grocery">🛒 Grocery Store</option>
+                    <option value="supermarket">🏬 Supermarket</option>
+                    <option value="other">📦 Other</option>
+                </select>
+                <p class="info-text">Tell us where your food donation comes from</p>
+            </div>
+
+            <!-- Full name -->
+            <div class="form-group">
+                <input type="text" id="fullName" placeholder="Full Name / Organization Name" required>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 EMAIL SECTION
+                 ═══════════════════════════════════════════════════════════ -->
+            <div class="form-group">
+
+                <!-- Row 1 : email input + Send OTP button -->
+                <div class="field-row" id="emailInputRow">
+                    <input type="email" id="email" placeholder="Email Address"
+                           required autocomplete="email">
+                    <button type="button" class="send-otp-btn" id="sendEmailOtpBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Send OTP</span>
+                    </button>
+                </div>
+
+                <!-- Row 2 : OTP entry — hidden until OTP is sent -->
+                <div class="otp-section" id="emailOtpSection">
+                    <div class="otp-section-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Enter the OTP sent to your email</span>
+                    </div>
+                    <div class="otp-boxes-row">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
+                    </div>
+                    <div class="otp-section-footer">
+                        <span class="otp-status" id="emailOtpStatus"></span>
+                        <button type="button" class="verify-otp-btn" id="verifyEmailOtpBtn">
+                            <i class="fas fa-check-circle"></i> Verify Email
+                        </button>
+                    </div>
+                    <small class="resend-text" id="emailResend"></small>
+                </div>
+
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" placeholder="Password (Minimum 8 characters)"
+                           required minlength="8" maxlength="12">
+                    <button type="button" class="password-toggle-btn" id="passwordToggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Confirm password -->
+            <div class="form-group">
+                <div class="password-input-wrapper">
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password"
+                           required minlength="8" maxlength="12">
+                    <button type="button" class="password-toggle-btn" id="confirmPasswordToggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- City / location -->
+            <div class="form-group location-group">
+                <input type="text" id="city" class="location-input"
+                       placeholder="City / Location" required aria-label="City or location">
+                <button type="button" id="useLocationBtn" class="location-btn" title="Use my current location">
+                    <i class="fas fa-map-pin" aria-hidden="true"></i>
+                </button>
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
+                <small id="locationStatus" class="info-text"></small>
+            </div>
+
+            <!-- Phone number -->
+            <div class="form-group">
+
+                <!-- Row 1 : country code + phone input -->
+                <div class="field-row" id="phoneInputRow">
+
+                    <!-- Country code picker -->
+                    <div class="country-code-wrapper">
+                        <button type="button" class="country-code-btn" id="countryCodeBtn"
+                                aria-haspopup="listbox" aria-expanded="false">
+                            <span class="cc-flag" id="selectedFlag">🇮🇳</span>
+                            <span class="cc-code" id="selectedCode">+91</span>
+                            <i class="fas fa-chevron-down cc-arrow"></i>
+                        </button>
+
+<input type="hidden" id="countryCode" value="+91">
+                    </div>
+
+                    <input type="tel" id="phone" class="phone-number-input"
+                              placeholder="Phone Number (Optional)" pattern="[0-9]+">
+                </div>
+
+            </div>
+
+            <button type="submit" class="signup-submit">
+                <i class="fas fa-check-circle"></i> Sign Up
+            </button>
+            <p>Already registered? <a href="login.html">Login here</a></p>
+
+        </form>
+    </section>
+
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Second Serve & Second Smile| All Rights Reserved | Recovering Food, Feeding Hope</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Country dropdown portal — at body level so overflow:hidden in .field-row doesn't clip it -->
+    <div class="country-dropdown" id="countryDropdown" role="listbox" aria-label="Select country code">
+        <div class="cc-search-wrapper">
+            <i class="fas fa-search cc-search-icon"></i>
+            <input type="text" class="cc-search" id="ccSearch" placeholder="Search country…" autocomplete="off">
+        </div>
+        <ul class="cc-list" id="ccList"></ul>
+    </div>
+
+        <script src="script/api-config.js"></script>
+    <script src="script/api-utils.js"></script>
+    <script src="script/signup.js"></script>
+    <script src="script/all.js"></script>
+
+</body>
+</html>

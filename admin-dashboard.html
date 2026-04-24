@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecondServe Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.logo i {
+    font-size: 32px;
+}
+
+.logo h2 {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.menu {
+    flex: 1;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background: rgba(255,255,255,0.15);
+    color: white;
+}
+
+.menu-item i {
+    font-size: 18px;
+    width: 24px;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.admin-info i {
+    font-size: 32px;
+}
+
+.admin-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.admin-role {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.btn-logout {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.top-bar {
+    background: white;
+    padding: 25px 40px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-bar h1 {
+    font-size: 28px;
+    color: #333;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-refresh,
+.btn-export {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-refresh {
+    background: #f0f0f0;
+    color: #333;
+}
+
+#themeToggle {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#themeToggle i {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.btn-refresh:hover {
+    background: #e0e0e0;
+}
+
+.btn-export {
+    background: #43e97b;
+    color: white;
+}
+
+.btn-export:hover {
+    background: #38d269;
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px 40px;
+}
+
+/* Sections */
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+.stat-info h3 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.stat-info p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Charts */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.chart-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.chart-card h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Recent Activity */
+.recent-activity {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.recent-activity h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.activity-item {
+    padding: 15px;
+    border-left: 3px solid #667eea;
+    background: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.activity-time {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Tables */
+.section-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn-filter {
+    padding: 12px 25px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-filter:hover {
+    background: #5568d3;
+}
+
+.btn-filter.btn-danger {
+    background: #dc3545;
+}
+
+.btn-filter.btn-danger:hover {
+    background: #c82333;
+}
+
+.filter-select {
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.table-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background: #f8f9fa;
+}
+
+.data-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.data-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-table tr:hover {
+    background: #f9f9f9;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-available {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-claimed {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-donor {
+    background: #e7f3ff;
+    color: #0056b3;
+}
+
+.status-ngo {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-admin {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.btn-action {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 5px;
+    transition: all 0.3s;
+}
+
+.btn-view {
+    background: #4facfe;
+    color: white;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-action:hover {
+    opacity: 0.8;
+}
+
+/* Analytics */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 25px;
+}
+
+.analytics-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.analytics-card h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Database Section */
+.db-tools {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.query-builder {
+    margin-top: 20px;
+}
+
+.sql-input {
+    width: 100%;
+    min-height: 150px;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.btn-execute {
+    margin-top: 15px;
+    padding: 12px 30px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-execute:hover {
+    background: #5568d3;
+}
+
+.query-results {
+    margin-top: 20px;
+    max-height: 400px;
+    overflow: auto;
+}
+
+.quick-queries {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.quick-queries h3 {
+    margin-bottom: 15px;
+}
+
+.quick-queries button {
+    margin: 5px;
+    padding: 10px 20px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.quick-queries button:hover {
+    background: #e0e0e0;
+}
+
+/* System Section */
+.system-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.system-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.system-card h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.info-grid {
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.status-online {
+    color: #28a745;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-danger {
+    padding: 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-warning {
+    padding: 12px;
+    background: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-action {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-action:hover,
+.btn-danger:hover,
+.btn-warning:hover {
+    opacity: 0.9;
+}
+
+/* Delete All Button styling */
+.btn-danger {
+    width: auto;
+}
+
+/* Theme Support */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+    background: #0f1420;
+    color: #e6ebf5;
+}
+
+body.dark-mode .top-bar,
+body.dark-mode .stat-card,
+body.dark-mode .chart-card,
+body.dark-mode .recent-activity,
+body.dark-mode .table-container,
+body.dark-mode .analytics-card,
+body.dark-mode .system-card,
+body.dark-mode .db-tools,
+body.dark-mode .quick-queries,
+body.dark-mode .search-input,
+body.dark-mode .filter-select,
+body.dark-mode .sql-input {
+    background: #171c2a;
+    color: #e6ebf5;
+    border-color: #2c3447;
+}
+
+body.dark-mode .top-bar,
+body.dark-mode .table-container,
+body.dark-mode .chart-card,
+body.dark-mode .recent-activity,
+body.dark-mode .analytics-card,
+body.dark-mode .system-card,
+body.dark-mode .db-tools,
+body.dark-mode .quick-queries {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-mode .top-bar h1,
+body.dark-mode .chart-card h3,
+body.dark-mode .recent-activity h3,
+body.dark-mode .analytics-card h3,
+body.dark-mode .system-card h3,
+body.dark-mode .stat-info h3,
+body.dark-mode .top-bar,
+body.dark-mode .data-table th,
+body.dark-mode .info-item span,
+body.dark-mode .quick-queries h3 {
+    color: #f6f8ff;
+}
+
+body.dark-mode .stat-info p,
+body.dark-mode .activity-time,
+body.dark-mode .info-item strong,
+body.dark-mode .data-table td,
+body.dark-mode .quick-queries button {
+    color: #c2c9da;
+}
+
+body.dark-mode .data-table thead {
+    background: #21283a;
+}
+
+body.dark-mode .data-table th,
+body.dark-mode .data-table td,
+body.dark-mode .info-item {
+    border-color: #2c3447;
+}
+
+body.dark-mode .data-table tr:hover,
+body.dark-mode .activity-item {
+    background: #202738;
+}
+
+body.dark-mode .activity-item {
+    border-left-color: #7d8cff;
+}
+
+body.dark-mode .btn-refresh {
+    background: #232b3f;
+    color: #e6ebf5;
+}
+
+body.dark-mode .btn-refresh:hover,
+body.dark-mode .quick-queries button:hover {
+    background: #2c3550;
+}
+
+body.dark-mode .search-input::placeholder,
+body.dark-mode .sql-input::placeholder {
+    color: #8d97ae;
+}
+
+body.dark-mode .menu-item {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+body.dark-mode .menu-item:hover,
+body.dark-mode .menu-item.active {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.status-pill,
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-pill.read,
+.badge.read {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-pill.unread,
+.badge.unread {
+    background: #ffe8cc;
+    color: #8a4b00;
+}
+
+.status-pill.available {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-pill.claimed {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-pill.completed {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-pill.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-pill.approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-pill.rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+body.dark-mode .status-pill.pending {
+    background: rgba(255, 243, 205, 0.18);
+    color: #ffd166;
+}
+
+body.dark-mode .status-pill.approved {
+    background: rgba(212, 237, 218, 0.18);
+    color: #93e6b0;
+}
+
+body.dark-mode .status-pill.rejected {
+    background: rgba(248, 215, 218, 0.18);
+    color: #ff9ca3;
+}
+
+.status-pill.expired,
+.status-pill.cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.message-preview {
+    display: block;
+    max-width: 360px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: inherit;
+}
+
+.empty-state {
+    padding: 28px 20px;
+    text-align: center;
+    color: #7b8498;
+    font-weight: 600;
+}
+
+.section-header {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1100px) {
+    .dashboard-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .main-content {
+        min-height: 100vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-bar,
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-actions,
+    .action-buttons {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .stats-grid,
+    .charts-grid,
+    .analytics-grid,
+    .system-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .content-area {
+        padding: 20px 16px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        min-width: 860px;
+    }
+}
+
+    </style>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h2>SecondServe</h2>
+            </div>
+            
+            <nav class="menu">
+                <a href="#overview" class="menu-item active" onclick="showSection('overview')">
+                    <i class="fas fa-chart-line"></i> Overview
+                </a>
+                <a href="#users" class="menu-item" onclick="showSection('users')">
+                    <i class="fas fa-users"></i> Users Management
+                </a>
+                <a href="#donations" class="menu-item" onclick="showSection('donations')">
+                    <i class="fas fa-hand-holding-heart"></i> Donations
+                </a>
+                <a href="#volunteers" class="menu-item" onclick="showSection('volunteers')">
+                    <i class="fas fa-hands-helping"></i> Volunteers
+                </a>
+                <a href="#messages" class="menu-item" onclick="showSection('messages')">
+                    <i class="fas fa-comments"></i> Messages
+                </a>
+                <a href="#analytics" class="menu-item" onclick="showSection('analytics')">
+                    <i class="fas fa-chart-pie"></i> Analytics
+                </a>
+                <a href="#database" class="menu-item" onclick="showSection('database')">
+                    <i class="fas fa-database"></i> Database Direct
+                </a>
+                <a href="#system" class="menu-item" onclick="showSection('system')">
+                    <i class="fas fa-server"></i> System Monitor
+                </a>
+            </nav>
+
+            <div class="admin-info">
+                <i class="fas fa-user-shield"></i>
+                <div>
+                    <div class="admin-name">Database Admin</div>
+                    <div class="admin-role">System Administrator</div>
+                </div>
+            </div>
+
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1 id="sectionTitle">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <button class="btn-refresh" onclick="toggleTheme()" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn-refresh" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-export" onclick="exportData()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Overview Section -->
+                <section id="overview-section" class="section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #667eea;">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalUsers">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #f093fb;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalDonors">0</h3>
+                                <p>Donors</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #4facfe;">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalNGOs">0</h3>
+                                <p>NGOs</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #43e97b;">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalDonations">0</h3>
+                                <p>Total Donations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #ff9f43;">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalVolunteers">0</h3>
+                                <p>Volunteers</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #6c5ce7;">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalMessages">0</h3>
+                                <p>Messages</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #ff6b6b;">
+                                <i class="fas fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalPickupRequests">0</h3>
+                                <p>Pickup Requests</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #0abde3;">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalExpiringSoon">0</h3>
+                                <p>Expiring Soon</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #ffa502;">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="pendingVolunteerApprovals">0</h3>
+                                <p>Pending Volunteer Approvals</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>User Growth</h3>
+                            <canvas id="userGrowthChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Donation Status</h3>
+                            <canvas id="donationStatusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivityList"></div>
+                    </div>
+                </section>
+
+                <!-- Users Section -->
+                <section id="users-section" class="section">
+                    <div class="section-header">
+                        <input type="text" id="userSearch" placeholder="Search users by name, email, or role..." class="search-input">
+                        <button class="btn-filter" onclick="loadUsers()">
+                            <i class="fas fa-filter"></i> Refresh Users
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>City</th>
+                                    <th>Phone</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Donations Section -->
+                <section id="donations-section" class="section">
+                    <div class="section-header">
+                        <input type="text" id="donationSearch" placeholder="Search donations..." class="search-input">
+                        <select id="statusFilter" class="filter-select" onchange="loadDonations()">
+                            <option value="">All Status</option>
+                            <option value="available">Available</option>
+                            <option value="claimed">Claimed</option>
+                            <option value="completed">Completed</option>
+                            <option value="expired">Expired</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <button class="btn-filter btn-danger" onclick="cleanupExpiredDonations()">
+                            <i class="fas fa-broom"></i> Clean Expired
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Food Name</th>
+                                    <th>Donor</th>
+                                    <th>Quantity</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="donationsTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Volunteers Section -->
+                <section id="volunteers-section" class="section">
+                    <div class="section-header">
+                        <input type="text" id="volunteerSearch" placeholder="Search volunteers..." class="search-input">
+                        <select id="volunteerRoleFilter" class="filter-select" onchange="loadVolunteers()">
+                            <option value="">All Roles</option>
+                            <option value="Pickup Volunteer">Pickup Volunteer</option>
+                            <option value="Awareness Volunteer">Awareness Volunteer</option>
+                            <option value="Coordination Volunteer">Coordination Volunteer</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>City</th>
+                                    <th>Role</th>
+                                    <th>Availability</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Submitted</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="volunteersTableBody">
+                                <tr>
+                                    <td colspan="9" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Messages Section -->
+                <section id="messages-section" class="section">
+                    <div class="section-header">
+                        <input type="text" id="messageSearch" placeholder="Search messages..." class="search-input">
+                        <select id="messageFilter" class="filter-select" onchange="loadMessages()">
+                            <option value="">All Messages</option>
+                            <option value="unread">Unread</option>
+                            <option value="read">Read</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Receiver</th>
+                                    <th>Donation</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messagesTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics-section" class="section">
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3>Donations by Category</h3>
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>City-wise Distribution</h3>
+                            <canvas id="cityChart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Monthly Trends</h3>
+                            <canvas id="monthlyTrendChart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>User Role Distribution</h3>
+                            <canvas id="roleChart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Volunteer Roles</h3>
+                            <canvas id="volunteerRoleChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Database Direct Section -->
+                <section id="database-section" class="section">
+                    <div class="db-tools">
+                        <h3>Direct Database Access</h3>
+                        <div class="query-builder">
+                            <textarea id="sqlQuery" placeholder="Enter SQL Query (SELECT only for safety)..." class="sql-input"></textarea>
+                            <button class="btn-execute" onclick="executeQuery()">
+                                <i class="fas fa-play"></i> Execute Query
+                            </button>
+                        </div>
+                        <div class="query-results" id="queryResults"></div>
+                    </div>
+
+                    <div class="quick-queries">
+                        <h3>Quick Queries</h3>
+                        <button onclick="quickQuery('users')">View All Users</button>
+                        <button onclick="quickQuery('donations')">View All Donations</button>
+                        <button onclick="quickQuery('recent')">Recent Activity (24h)</button>
+                        <button onclick="quickQuery('stats')">Database Statistics</button>
+                    </div>
+                </section>
+
+                <!-- System Monitor Section -->
+                <section id="system-section" class="section">
+                    <div class="system-grid">
+                        <div class="system-card">
+                            <h3><i class="fas fa-database"></i> Database Info</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span>Database Size:</span>
+                                    <strong id="dbSize">Loading...</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Memory Usage:</span>
+                                    <strong id="memoryUsage">Loading...</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Total Records:</span>
+                                    <strong id="totalRecords">Loading...</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Last Backup:</span>
+                                    <strong id="lastBackup">Never</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Last Cleanup:</span>
+                                    <strong id="lastCleanup">Loading...</strong>
+                                </div>
+                            </div>
+                            <button class="btn-action" onclick="backupDatabase()">
+                                <i class="fas fa-save"></i> Backup Database
+                            </button>
+                        </div>
+
+                        <div class="system-card">
+                            <h3><i class="fas fa-chart-area"></i> Server Stats</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span>Server Status:</span>
+                                    <strong class="status-online">● Online</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>API Endpoint:</span>
+                                    <strong>localhost:5000</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Node Version:</span>
+                                    <strong id="nodeVersion">Loading...</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Uptime:</span>
+                                    <strong id="serverUptime">--</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="system-card">
+                            <h3><i class="fas fa-clock"></i> Session Info</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span>Login Time:</span>
+                                    <strong id="loginTime">--</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Session Duration:</span>
+                                    <strong id="sessionDuration">--</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="system-card">
+                            <h3><i class="fas fa-exclamation-triangle"></i> System Actions</h3>
+                            <div class="action-buttons">
+                                <button class="btn-warning" onclick="cleanupExpiredDonations()">
+                                    <i class="fas fa-broom"></i> Clean Expired Donations
+                                </button>
+                                <button class="btn-danger" onclick="clearAllSessions()">
+                                    <i class="fas fa-trash"></i> Clear All User Sessions
+                                </button>
+                                <button class="btn-warning" onclick="resetDatabase()">
+                                    <i class="fas fa-redo"></i> Reset Test Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="script/env-config.js"></script>
+    <script>
+        // Check authentication
+const ADMIN_SESSION_KEY = 'feedlink_admin_session';
+function getAdminSession() {
+    try {
+        const raw = sessionStorage.getItem(ADMIN_SESSION_KEY);
+        const session = raw ? JSON.parse(raw) : null;
+        if (!session || !session.token || !session.expiresAt || session.expiresAt <= Date.now()) {
+            sessionStorage.removeItem(ADMIN_SESSION_KEY);
+            return null;
+        }
+        return session;
+    } catch (error) {
+        sessionStorage.removeItem(ADMIN_SESSION_KEY);
+        return null;
+    }
+}
+
+if (!getAdminSession()) {
+    window.location.href = 'admin-login.html';
+}
+
+// API Configuration
+const API_BASE = window.ENV_CONFIG?.API_BASE_URL || 'http://localhost:5000/api';
+let charts = {};
+let allUsers = [];
+let allDonations = [];
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    loadOverviewData();
+    updateSessionInfo();
+    setInterval(updateSessionInfo, 1000);
+});
+
+// Navigation
+function showSection(sectionName) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Remove active from all menu items
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Show selected section
+    document.getElementById(sectionName + '-section').classList.add('active');
+    
+    // Update active menu item
+    if (event && event.target) {
+        event.target.closest('.menu-item').classList.add('active');
+    }
+    
+    // Update title
+    const titles = {
+        'overview': 'Dashboard Overview',
+        'users': 'User Management',
+        'donations': 'Donation Management',
+        'analytics': 'Analytics & Insights',
+        'database': 'Direct Database Access',
+        'system': 'System Monitor'
+    };
+    document.getElementById('sectionTitle').textContent = titles[sectionName];
+    
+    // Load section data
+    switch(sectionName) {
+        case 'overview':
+            loadOverviewData();
+            break;
+        case 'users':
+            loadUsers();
+            break;
+        case 'donations':
+            loadDonations();
+            break;
+        case 'analytics':
+            loadAnalytics();
+            break;
+        case 'database':
+            loadDatabaseInfo();
+            break;
+        case 'system':
+            loadSystemInfo();
+            break;
+    }
+}
+
+// Load Overview Data
+async function loadOverviewData() {
+    try {
+        const [usersRes, donationsRes] = await Promise.all([
+            fetch(`${API_BASE}/admin/users`),
+            fetch(`${API_BASE}/admin/donations`)
+        ]);
+
+        const users = await usersRes.json();
+        const donations = await donationsRes.json();
+
+        allUsers = users;
+        allDonations = donations;
+
+        // Update stats
+        document.getElementById('totalUsers').textContent = users.length;
+        document.getElementById('totalDonors').textContent = users.filter(u => u.role === 'donor').length;
+        document.getElementById('totalNGOs').textContent = users.filter(u => u.role === 'ngo').length;
+        document.getElementById('totalDonations').textContent = donations.length;
+
+        // Create charts
+        createUserGrowthChart(users);
+        createDonationStatusChart(donations);
+        
+        // Show recent activity
+        showRecentActivity(users, donations);
+
+    } catch (error) {
+        console.error('Error loading overview:', error);
+        alert('SecondServe admin data could not load. Make sure the API server is running on localhost:5000.');
+    }
+}
+
+// Create User Growth Chart
+function createUserGrowthChart(users) {
+    const ctx = document.getElementById('userGrowthChart');
+    if (!ctx) return;
+
+    // Group users by date
+    const dateMap = {};
+    users.forEach(user => {
+        const date = new Date(user.created_at || Date.now()).toLocaleDateString();
+        dateMap[date] = (dateMap[date] || 0) + 1;
+    });
+
+    const labels = Object.keys(dateMap).slice(-7);
+    const data = labels.map(date => dateMap[date]);
+
+    if (charts.userGrowth) charts.userGrowth.destroy();
+    
+    charts.userGrowth = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'New Users',
+                data: data,
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+// Create Donation Status Chart
+function createDonationStatusChart(donations) {
+    const ctx = document.getElementById('donationStatusChart');
+    if (!ctx) return;
+
+    const statusCount = {
+        available: 0,
+        claimed: 0,
+        completed: 0,
+        expired: 0,
+        cancelled: 0
+    };
+
+    donations.forEach(d => {
+        statusCount[d.status] = (statusCount[d.status] || 0) + 1;
+    });
+
+    if (charts.donationStatus) charts.donationStatus.destroy();
+
+    charts.donationStatus = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Available', 'Claimed', 'Completed', 'Expired', 'Cancelled'],
+            datasets: [{
+                data: Object.values(statusCount),
+                backgroundColor: [
+                    '#43e97b',
+                    '#ffc107',
+                    '#4facfe',
+                    '#dc3545',
+                    '#6c757d'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+}
+
+// Show Recent Activity
+function showRecentActivity(users, donations) {
+    const activityList = document.getElementById('recentActivityList');
+    if (!activityList) return;
+
+    const activities = [];
+
+    // Add recent users
+    users.slice(-5).forEach(user => {
+        activities.push({
+            text: `New ${user.role} registered: ${user.fullName} (${user.email})`,
+            time: new Date(user.created_at || Date.now()),
+            type: 'user'
+        });
+    });
+
+    // Add recent donations
+    donations.slice(-5).forEach(donation => {
+        activities.push({
+            text: `New donation: ${donation.foodName} - ${donation.quantity} ${donation.unit}`,
+            time: new Date(donation.created_at || Date.now()),
+            type: 'donation'
+        });
+    });
+
+    // Sort by time
+    activities.sort((a, b) => b.time - a.time);
+
+    activityList.innerHTML = activities.slice(0, 10).map(activity => `
+        <div class="activity-item">
+            <div>${activity.text}</div>
+            <div class="activity-time">${formatTime(activity.time)}</div>
+        </div>
+    `).join('');
+}
+
+// Load Users
+async function loadUsers() {
+    try {
+        const response = await fetch(`${API_BASE}/admin/users`);
+        const users = await response.json();
+        allUsers = users;
+
+        const tbody = document.getElementById('usersTableBody');
+        tbody.innerHTML = users.map(user => `
+            <tr>
+                <td>${user.id}</td>
+                <td>${user.fullName}</td>
+                <td>${user.email}</td>
+                <td><span class="status-badge status-${user.role}">${user.role.toUpperCase()}</span></td>
+                <td>${user.city}</td>
+                <td>${user.phone || 'N/A'}</td>
+                <td>${formatDate(user.created_at)}</td>
+                <td>
+                    <button class="btn-action btn-view" onclick="viewUser(${user.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-action btn-delete" onclick="deleteUser(${user.id}, '${user.fullName}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+
+        // Add search functionality
+        document.getElementById('userSearch').oninput = function(e) {
+            const search = e.target.value.toLowerCase();
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        };
+
+    } catch (error) {
+        console.error('Error loading users:', error);
+    }
+}
+
+// Load Donations
+async function loadDonations() {
+    try {
+        const status = document.getElementById('statusFilter')?.value || '';
+        const response = await fetch(`${API_BASE}/admin/donations`);
+        let donations = await response.json();
+        
+        if (status) {
+            donations = donations.filter(d => d.status === status);
+        }
+        allDonations = donations;
+
+        const tbody = document.getElementById('donationsTableBody');
+        tbody.innerHTML = donations.map(donation => `
+            <tr>
+                <td>${donation.id}</td>
+                <td>${donation.foodName}</td>
+                <td>${donation.donor_name || 'Unknown'}</td>
+                <td>${donation.quantity} ${donation.unit}</td>
+                <td>${donation.category || 'N/A'}</td>
+                <td><span class="status-badge status-${donation.status}">${donation.status}</span></td>
+                <td>${formatDate(donation.created_at)}</td>
+                <td>
+                    <button class="btn-action btn-view" onclick="viewDonation(${donation.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-action btn-delete" onclick="deleteDonation(${donation.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+
+        // Add search functionality
+        document.getElementById('donationSearch').oninput = function(e) {
+            const search = e.target.value.toLowerCase();
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        };
+
+    } catch (error) {
+        console.error('Error loading donations:', error);
+    }
+}
+
+// Load Analytics
+async function loadAnalytics() {
+    try {
+        const [usersRes, donationsRes] = await Promise.all([
+            fetch(`${API_BASE}/admin/users`),
+            fetch(`${API_BASE}/admin/donations`)
+        ]);
+
+        const users = await usersRes.json();
+        const donations = await donationsRes.json();
+
+        createCategoryChart(donations);
+        createCityChart(users);
+        createMonthlyTrendChart(donations);
+        createRoleChart(users);
+
+    } catch (error) {
+        console.error('Error loading analytics:', error);
+    }
+}
+
+// Create Category Chart
+function createCategoryChart(donations) {
+    const ctx = document.getElementById('categoryChart');
+    if (!ctx) return;
+
+    const categories = {};
+    donations.forEach(d => {
+        categories[d.category] = (categories[d.category] || 0) + 1;
+    });
+
+    if (charts.category) charts.category.destroy();
+
+    charts.category = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(categories),
+            datasets: [{
+                data: Object.values(categories),
+                backgroundColor: [
+                    '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                    '#43e97b', '#fa709a', '#ffc107'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+}
+
+// Create City Chart
+function createCityChart(users) {
+    const ctx = document.getElementById('cityChart');
+    if (!ctx) return;
+
+    const cities = {};
+    users.forEach(u => {
+        cities[u.city] = (cities[u.city] || 0) + 1;
+    });
+
+    const topCities = Object.entries(cities)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+    if (charts.city) charts.city.destroy();
+
+    charts.city = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: topCities.map(c => c[0]),
+            datasets: [{
+                label: 'Users',
+                data: topCities.map(c => c[1]),
+                backgroundColor: '#667eea'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+// Create Monthly Trend Chart
+function createMonthlyTrendChart(donations) {
+    const ctx = document.getElementById('monthlyTrendChart');
+    if (!ctx) return;
+
+    const months = {};
+    donations.forEach(d => {
+        const month = new Date(d.created_at || Date.now()).toLocaleDateString('en', { month: 'short', year: 'numeric' });
+        months[month] = (months[month] || 0) + 1;
+    });
+
+    if (charts.monthly) charts.monthly.destroy();
+
+    charts.monthly = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(months),
+            datasets: [{
+                label: 'Donations',
+                data: Object.values(months),
+                borderColor: '#43e97b',
+                backgroundColor: 'rgba(67, 233, 123, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+}
+
+// Create Role Chart
+function createRoleChart(users) {
+    const ctx = document.getElementById('roleChart');
+    if (!ctx) return;
+
+    const roles = {};
+    users.forEach(u => {
+        roles[u.role] = (roles[u.role] || 0) + 1;
+    });
+
+    if (charts.role) charts.role.destroy();
+
+    charts.role = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(roles).map(r => r.toUpperCase()),
+            datasets: [{
+                data: Object.values(roles),
+                backgroundColor: ['#4facfe', '#f093fb', '#764ba2']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+}
+
+// Load Database Info
+function loadDatabaseInfo() {
+    document.getElementById('sqlQuery').value = 'SELECT * FROM users LIMIT 10;';
+}
+
+// Execute SQL Query
+async function executeQuery() {
+    const query = document.getElementById('sqlQuery').value.trim();
+    
+    if (!query.toLowerCase().startsWith('select')) {
+        alert('Only SELECT queries are allowed for security reasons.');
+        return;
+    }
+
+    alert('Direct SQL execution requires a special backend endpoint. Use the Quick Queries instead.');
+}
+
+// Quick Queries
+async function quickQuery(type) {
+    const resultsDiv = document.getElementById('queryResults');
+    
+    try {
+        let data;
+        switch(type) {
+            case 'users':
+                const usersRes = await fetch(`${API_BASE}/admin/users`);
+                data = await usersRes.json();
+                break;
+            case 'donations':
+                const donationsRes = await fetch(`${API_BASE}/admin/donations`);
+                data = await donationsRes.json();
+                break;
+            case 'recent':
+                const recentRes = await fetch(`${API_BASE}/admin/donations`);
+                const allData = await recentRes.json();
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                data = allData.filter(d => new Date(d.created_at) > yesterday);
+                break;
+            case 'stats':
+                const [u, d] = await Promise.all([
+                    fetch(`${API_BASE}/admin/users`).then(r => r.json()),
+                    fetch(`${API_BASE}/admin/donations`).then(r => r.json())
+                ]);
+                data = {
+                    totalUsers: u.length,
+                    totalDonations: d.length,
+                    donors: u.filter(user => user.role === 'donor').length,
+                    ngos: u.filter(user => user.role === 'ngo').length,
+                    available: d.filter(don => don.status === 'available').length,
+                    completed: d.filter(don => don.status === 'completed').length
+                };
+                break;
+        }
+
+        resultsDiv.innerHTML = `
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <pre style="overflow: auto; max-height: 400px;">${JSON.stringify(data, null, 2)}</pre>
+            </div>
+        `;
+    } catch (error) {
+        resultsDiv.innerHTML = `<div style="color: red; padding: 15px;">Error: ${error.message}</div>`;
+    }
+}
+
+// Load System Info
+function loadSystemInfo() {
+    document.getElementById('dbSize').textContent = 'N/A (requires backend)';
+    document.getElementById('totalRecords').textContent = 'Loading...';
+    
+    // Get stats
+    Promise.all([
+        fetch(`${API_BASE}/admin/users`).then(r => r.json()),
+        fetch(`${API_BASE}/admin/donations`).then(r => r.json())
+    ])
+    .then(([users, donations]) => {
+        document.getElementById('totalRecords').textContent = (users.length + donations.length) || 'N/A';
+    })
+    .catch(() => {
+        document.getElementById('totalRecords').textContent = 'N/A';
+    });
+
+    document.getElementById('lastBackup').textContent = localStorage.getItem('lastBackup') || 'Never';
+}
+
+// User Actions
+function viewUser(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (user) {
+        alert(`User Details:\n\nID: ${user.id}\nName: ${user.fullName}\nEmail: ${user.email}\nRole: ${user.role}\nCity: ${user.city}\nPhone: ${user.phone || 'N/A'}\nJoined: ${formatDate(user.created_at)}`);
+    }
+}
+
+// DELETE USER
+async function deleteUser(userId, userName) {
+    if (!confirm(`Are you sure you want to delete user: ${userName}?\n\nThis action cannot be undone and will also delete all their donations.`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/admin/users/${userId}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert('User deleted successfully!');
+            loadUsers();
+            loadOverviewData();
+        } else {
+            alert('Error: ' + (data.error || 'Could not delete user'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error deleting user');
+    }
+}
+
+// Donation Actions
+function viewDonation(donationId) {
+    const donation = allDonations.find(d => d.id === donationId);
+    if (donation) {
+        alert(`Donation Details:\n\nID: ${donation.id}\nFood: ${donation.foodName}\nQuantity: ${donation.quantity} ${donation.unit}\nCategory: ${donation.category || 'N/A'}\nStatus: ${donation.status}\nAddress: ${donation.address}, ${donation.city}\nCreated: ${formatDate(donation.created_at)}`);
+    }
+}
+
+// DELETE DONATION
+async function deleteDonation(donationId) {
+    if (!confirm('Are you sure you want to delete this donation?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/admin/donations/${donationId}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert('Donation deleted successfully!');
+            loadDonations();
+            loadOverviewData();
+        } else {
+            alert('Error: ' + (data.error || 'Could not delete donation'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error deleting donation');
+    }
+}
+
+// DELETE ALL DONATIONS
+async function deleteAllDonations() {
+    if (!confirm('⚠️ WARNING! This will DELETE ALL DONATIONS!\n\nThis action cannot be undone. Are you absolutely sure?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/admin/donations`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert('✅ All donations deleted successfully! (' + data.changes + ' records removed)');
+            loadDonations();
+            loadOverviewData();
+        } else {
+            alert('Error: ' + (data.error || 'Could not delete all donations'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error deleting all donations');
+    }
+}
+
+// System Actions
+function backupDatabase() {
+    if (confirm('Create a database backup? This will save the current state.')) {
+        localStorage.setItem('lastBackup', new Date().toISOString());
+        alert('Backup timestamp saved locally. Full backup requires backend implementation.');
+    }
+}
+
+function clearAllSessions() {
+    if (confirm('Clear all user sessions? Users will need to log in again.')) {
+        alert('This would clear all user tokens from the database (requires backend endpoint).');
+    }
+}
+
+function resetDatabase() {
+    if (confirm('Reset database to initial test data? This will DELETE all current data!')) {
+        alert('This would run the init-database.js script (requires backend endpoint).');
+    }
+}
+
+// Export Data
+function exportData() {
+    const section = document.querySelector('.section.active').id.replace('-section', '');
+    
+    let data;
+    if (section === 'overview') {
+        data = { users: allUsers, donations: allDonations };
+    } else if (section === 'users') {
+        data = allUsers;
+    } else if (section === 'donations') {
+        data = allDonations;
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `secondserve-${section}-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Refresh Data
+function refreshData() {
+    const section = document.querySelector('.menu-item.active')?.getAttribute('href')?.substring(1);
+    if (section) {
+        showSection(section);
+    }
+}
+
+// Utility Functions
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleString();
+}
+
+function formatTime(date) {
+    const now = new Date();
+    const diff = Math.floor((now - date) / 1000);
+    
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+}
+
+function updateSessionInfo() {
+    const loginTime = getAdminSession()?.loginTime;
+    if (loginTime) {
+        document.getElementById('loginTime').textContent = new Date(loginTime).toLocaleString();
+        
+        const duration = Math.floor((Date.now() - new Date(loginTime)) / 1000);
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        document.getElementById('sessionDuration').textContent = `${hours}h ${minutes}m`;
+    }
+}
+
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.removeItem(ADMIN_SESSION_KEY);
+        window.location.href = 'admin-login.html';
+    }
+}
+
+function filterUsers() {
+    alert('Advanced filter options coming soon!');
+}
+    </script>
+    <script src="admin-dashboard-override.js"></script>
+</body>
+</html>

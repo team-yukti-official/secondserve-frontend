@@ -1,0 +1,753 @@
+/* ===== SIGNUP PAGE STYLES ===== */
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes popIn {
+    0%   { opacity: 0; transform: scale(0.94) translateY(-6px); }
+    100% { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+/* ── Donor type field ───────────────────────────────────────────────────── */
+.donor-type-field {
+    display: none;
+    overflow: hidden;
+    animation: slideDown 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.donor-type-field.show { display: block; }
+
+/* ── Form group ─────────────────────────────────────────────────────────── */
+.form-group {
+    position: relative;
+    margin-bottom: 18px;
+}
+.form-group label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-medium);
+    letter-spacing: 0.01em;
+}
+
+/* ── Info / status text ─────────────────────────────────────────────────── */
+.info-text {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+/* ── Signup header ──────────────────────────────────────────────────────── */
+.signup-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+.signup-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.signup-header p { color: var(--text-light); font-size: 0.95rem; }
+
+/* ── Submit button ──────────────────────────────────────────────────────── */
+.signup-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.25);
+}
+.signup-submit:hover {
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    box-shadow: 0 8px 28px rgba(46, 125, 50, 0.35);
+    transform: translateY(-2px);
+}
+.signup-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── Select styling ─────────────────────────────────────────────────────── */
+#userType, #donorType {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232e7d32' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    min-height: 48px;
+    text-overflow: ellipsis;
+}
+
+/* ── Password match feedback ────────────────────────────────────────────── */
+.error-message   { color: #ef4444; display: block; margin-top: 6px; font-size: 0.85rem; font-weight: 500; }
+.success-message { color: #22c55e; display: block; margin-top: 6px; font-size: 0.85rem; font-weight: 500; }
+
+
+/* ==========================================================================
+   FIELD ROW  —  input(s) + Send OTP button in one unified pill
+   ========================================================================== */
+
+.field-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 50px;
+    background: var(--bg-white, #fff);
+    border: 1.5px solid var(--border-color, #e5e7eb);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 0;
+}
+
+.field-row:focus-within {
+    border-color: var(--primary-color, #2e7d32);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.13);
+}
+
+/* Verified state — whole pill glows green */
+.field-row.row-verified {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.13);
+}
+
+/* Email input inside the row */
+.field-row input[type="email"] {
+    flex: 1 1 0;
+    min-width: 0;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin-bottom: 0 !important;
+    outline: none;
+    background: transparent;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-dark, #1a1a2e);
+    height: 100%;
+}
+.field-row input[type="email"]::placeholder {
+    color: var(--text-light, #9ca3af);
+}
+
+/* Phone number input inside the row */
+.phone-number-input {
+    flex: 1 1 0;
+    min-width: 0;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin-bottom: 0 !important;
+    outline: none;
+    background: transparent;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-dark, #1a1a2e);
+    height: 100%;
+}
+.phone-number-input::placeholder { color: var(--text-light, #9ca3af); }
+
+/* Send OTP button — right end of pill */
+.send-otp-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 100%;
+    width: auto;
+    background: var(--primary-gradient, linear-gradient(135deg, #2e7d32, #43a047));
+    color: #fff;
+    border: none;
+    border-left: 1.5px solid rgba(46, 125, 50, 0.2);
+    font-size: 0.83rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s;
+}
+.send-otp-btn:hover   { background: linear-gradient(135deg, #1b5e20, #2e7d32); transform: none; box-shadow: none; }
+.send-otp-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.send-otp-btn.sent {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-left-color: #c8e6c9;
+}
+.send-otp-btn.sent:hover { background: #c8e6c9; transform: none; box-shadow: none; }
+
+
+/* ==========================================================================
+   COUNTRY CODE DROPDOWN
+   ========================================================================== */
+/* ===== COUNTRY CODE DROPDOWN ===== */
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.country-code-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.country-code-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 13px 10px;
+    background: var(--bg-white);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    white-space: nowrap;
+    transition: var(--transition);
+    width: auto;
+    margin-bottom: 0;
+}
+
+.country-code-btn:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.12);
+}
+
+.cc-arrow {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.country-code-btn[aria-expanded="true"] .cc-arrow {
+    transform: rotate(180deg);
+}
+
+.country-dropdown {
+    display: none;
+    position: fixed;        /* fixed so it escapes overflow:hidden inside .field-row */
+    z-index: 9999;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    width: 270px;
+    overflow: hidden;
+    animation: ccDropIn 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes ccDropIn {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.country-dropdown.open {
+    display: block;
+}
+
+.cc-search-wrapper {
+    position: relative;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cc-search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 0.8rem;
+}
+
+.cc-search {
+    width: 100%;
+    padding: 8px 10px 8px 30px;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    background: var(--bg-white);
+    color: var(--text-dark);
+    margin-bottom: 0 !important;
+}
+
+.cc-search:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.cc-list {
+    list-style: none;
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 6px 0;
+    margin: 0;
+}
+
+.cc-list li {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+}
+
+.cc-list li:hover,
+.cc-list li.focused {
+    background: rgba(46, 125, 50, 0.08);
+    color: var(--primary-color);
+}
+
+.cc-list li.selected {
+    background: rgba(46, 125, 50, 0.1);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.li-code { font-size: 0.8rem; color: var(--text-light); margin-left: auto; }
+
+.phone-number-input {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+/* ===== DARK MODE — COUNTRY CODE DROPDOWN ===== */
+body.dark-mode .country-code-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-color);
+    color: var(--text-dark);
+}
+
+body.dark-mode .country-dropdown {
+    background: #1e293b;
+    border-color: var(--border-color);
+}
+
+body.dark-mode .cc-search {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-dark);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .cc-list li {
+    color: var(--text-dark);
+}
+
+body.dark-mode .cc-list li:hover,
+body.dark-mode .cc-list li.focused {
+    background: rgba(102, 187, 106, 0.1);
+}
+
+body.dark-mode .cc-search-wrapper {
+    border-bottom-color: var(--border-color);
+}
+
+/* ==========================================================================
+   OTP SECTION  —  the separate card that reveals after Send OTP
+   ========================================================================== */
+
+.otp-section {
+    display: none;          /* hidden by default */
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 10px;
+    padding: 18px 20px 16px;
+    background: linear-gradient(135deg, #f0faf1 0%, #e8f5e9 100%);
+    border: 1.5px solid #a5d6a7;
+    border-radius: 14px;
+    animation: popIn 0.28s cubic-bezier(0.34, 1.46, 0.64, 1);
+    position: relative;
+}
+
+.otp-section.visible { display: flex; }
+
+/* Dashed connector line from the field row above */
+.otp-section::before {
+    content: '';
+    position: absolute;
+    top: -11px;
+    left: 26px;
+    width: 2px;
+    height: 11px;
+    background: #a5d6a7;
+    border-radius: 2px;
+}
+
+/* Header row — icon + label */
+.otp-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #2e7d32;
+}
+.otp-section-header i { font-size: 0.95rem; }
+
+/* Six individual OTP digit boxes */
+.otp-boxes-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.otp-box {
+    width: 44px !important;
+    height: 52px !important;
+    border: 2px solid #a5d6a7 !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    color: #1b5e20 !important;
+    caret-color: #2e7d32;
+    outline: none !important;
+    box-shadow: none !important;
+    margin-bottom: 0 !important;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s !important;
+    padding: 0 !important;
+    flex-shrink: 0;
+}
+
+.otp-box:focus {
+    border-color: #2e7d32 !important;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15) !important;
+    transform: scale(1.06);
+}
+
+.otp-box.filled {
+    border-color: #43a047 !important;
+    background: #f1f8f1 !important;
+}
+
+.otp-box.error-shake {
+    border-color: #ef4444 !important;
+    animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-5px); }
+    75%       { transform: translateX(5px); }
+}
+
+/* Footer row — status text + Verify button */
+.otp-section-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.otp-status {
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-height: 16px;
+    flex: 1;
+}
+.otp-status.success { color: #22c55e; }
+.otp-status.error   { color: #ef4444; }
+.otp-status.info    { color: #f59e0b; }
+
+.verify-otp-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    width: auto;
+    background: #1565c0;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    transition: background 0.18s, transform 0.15s;
+}
+.verify-otp-btn:hover   { background: #0d47a1; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,71,161,0.25); }
+.verify-otp-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Verified state override on the whole section */
+.otp-section.verified {
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border-color: #66bb6a;
+}
+.otp-section.verified .otp-section-header { color: #1b5e20; }
+
+/* Resend link line */
+.resend-text {
+    font-size: 0.78rem;
+    color: var(--text-light, #6b7280);
+    text-align: center;
+}
+.resend-text a {
+    color: var(--primary-color, #2e7d32);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+.resend-text a:hover { text-decoration: underline; }
+
+
+/* ==========================================================================
+   DARK MODE
+   ========================================================================== */
+
+.dark-mode .field-row {
+    background: var(--bg-card, #1e293b);
+    border-color: var(--border-color, #334155);
+}
+.dark-mode .field-row:focus-within {
+    border-color: var(--primary-light, #66bb6a);
+    box-shadow: 0 0 0 3px rgba(102,187,106,0.14);
+}
+.dark-mode .field-row.row-verified {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 3px rgba(76,175,80,0.14);
+}
+.dark-mode .field-row input[type="email"],
+.dark-mode .phone-number-input { color: var(--text-dark, #f1f5f9); }
+
+.dark-mode .country-code-btn {
+    background: rgba(255,255,255,0.04);
+    border-right-color: var(--border-color, #334155);
+    color: var(--text-dark, #f1f5f9);
+}
+.dark-mode .country-code-btn:hover,
+.dark-mode .country-code-btn[aria-expanded="true"] { background: rgba(102,187,106,0.1); }
+.dark-mode .cc-code { color: var(--text-dark, #f1f5f9); }
+
+.dark-mode .country-dropdown {
+    background: var(--bg-card, #1e293b);
+    border-color: var(--border-color, #334155);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+}
+.dark-mode .cc-search-wrapper { border-bottom-color: var(--border-color, #334155); }
+.dark-mode .cc-search {
+    background: var(--bg-light, #0f172a);
+    color: var(--text-dark, #f1f5f9);
+    border-color: var(--border-color, #334155);
+}
+.dark-mode .cc-search:focus { border-color: var(--primary-light, #66bb6a); }
+.dark-mode .cc-list li { color: var(--text-dark, #f1f5f9); }
+.dark-mode .cc-list li:hover,
+.dark-mode .cc-list li.selected { background: rgba(102,187,106,0.1); }
+.dark-mode .cc-list .li-code { color: var(--primary-light, #66bb6a); }
+
+.dark-mode .send-otp-btn.sent {
+    background: rgba(46,125,50,0.15);
+    color: #81c784;
+    border-left-color: rgba(102,187,106,0.2);
+}
+
+.dark-mode .otp-section {
+    background: linear-gradient(135deg, #1a2e1a, #162516);
+    border-color: #2e5e30;
+}
+.dark-mode .otp-section::before { background: #2e5e30; }
+.dark-mode .otp-section-header { color: #81c784; }
+.dark-mode .otp-box {
+    background: #1e293b !important;
+    border-color: #2e5e30 !important;
+    color: #a5d6a7 !important;
+}
+.dark-mode .otp-box:focus {
+    border-color: #66bb6a !important;
+    box-shadow: 0 0 0 3px rgba(102,187,106,0.18) !important;
+}
+.dark-mode .otp-box.filled {
+    background: #1b2e1b !important;
+    border-color: #43a047 !important;
+}
+.dark-mode .otp-section.verified { background: linear-gradient(135deg, #162516, #1a301a); border-color: #43a047; }
+.dark-mode .verify-otp-btn { background: #1976d2; }
+.dark-mode .verify-otp-btn:hover { background: #1565c0; }
+/* Signup page dropdowns */
+body.dark-mode #userType,
+body.dark-mode #donorType {
+    background-color: #1e1e2e;
+    color: #ffffff;
+    border: 1px solid #555;
+    color-scheme: dark;
+}
+
+body.dark-mode #userType option,
+body.dark-mode #donorType option {
+    background-color: #1e1e2e;
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    #userType,
+    #donorType {
+        font-size: 16px;
+        background-position: right 12px center;
+        padding-right: 38px;
+    }
+
+    .signup-header {
+        margin-bottom: 24px;
+    }
+
+    .signup-header h2 {
+        font-size: 1.45rem;
+        gap: 8px;
+    }
+
+    .signup-header p {
+        font-size: 0.9rem;
+    }
+
+    .field-row {
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 10px;
+        padding: 10px;
+        min-height: auto;
+    }
+
+    .field-row input[type="email"],
+    .phone-number-input {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    .country-code-wrapper {
+        width: 100%;
+    }
+
+    .country-code-btn {
+        width: 100%;
+        justify-content: space-between;
+        padding: 12px 14px;
+    }
+
+    .send-otp-btn {
+        width: 100%;
+        min-height: 44px;
+        justify-content: center;
+        border-left: none;
+        border-top: 1.5px solid rgba(46, 125, 50, 0.2);
+        border-radius: 10px;
+    }
+
+    .country-dropdown {
+        width: min(320px, calc(100vw - 24px));
+        max-width: calc(100vw - 24px);
+    }
+
+    .otp-section {
+        padding: 16px 14px 14px;
+    }
+
+    .otp-boxes-row {
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .otp-box {
+        width: 42px !important;
+        height: 48px !important;
+        font-size: 1.25rem !important;
+    }
+
+    .otp-section-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .verify-otp-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    #userType,
+    #donorType {
+        font-size: 16px;
+    }
+
+    .signup-header {
+        margin-bottom: 20px;
+    }
+
+    .signup-header h2 {
+        font-size: 1.25rem;
+        line-height: 1.3;
+        flex-wrap: wrap;
+    }
+
+    .signup-header p,
+    .info-text,
+    .resend-text {
+        font-size: 0.84rem;
+    }
+
+    .field-row {
+        padding: 8px;
+        border-radius: 14px;
+    }
+
+    .country-code-btn,
+    .field-row input[type="email"],
+    .phone-number-input,
+    .send-otp-btn {
+        font-size: 0.92rem;
+    }
+
+    .send-otp-btn {
+        padding: 12px 14px;
+    }
+
+    .otp-section {
+        gap: 12px;
+        padding: 14px 12px 12px;
+    }
+
+    .otp-boxes-row {
+        justify-content: center;
+    }
+
+    .otp-box {
+        width: 38px !important;
+        height: 44px !important;
+        font-size: 1.1rem !important;
+    }
+
+    .otp-section-header {
+        font-size: 0.78rem;
+    }
+
+    .cc-list li {
+        padding: 12px 14px;
+    }
+}

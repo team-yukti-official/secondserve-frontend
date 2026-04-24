@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find NGOs | Second Serve &amp; Second Smile</title>
+  <link rel="stylesheet" href="style/all.css">
+  <script>document.documentElement.classList.add('page-is-entering');</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="logo">
+        <a href="index.html" class="logo">
+
+        <svg width="200" height="50" viewBox="0 0 200 50">
+
+  <defs>
+    <!-- 3D Plate Gradients -->
+    <radialGradient id="plateOuter" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#d9d9d9"/>
+    </radialGradient>
+
+    <radialGradient id="plateInner" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ececec"/>
+    </radialGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5"
+                    flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow -->
+    <marker id="arrow"
+            markerWidth="5"
+            markerHeight="5"
+            refX="4"
+            refY="2.5"
+            orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT TEXT (closer) -->
+  <text x="78" y="32"
+        text-anchor="end"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffb300">
+    Second
+  </text>
+
+  <!-- CENTER -->
+  <g transform="translate(100,25)">
+
+    <!-- Rotating Arrows -->
+    <g>
+      <path d="M 0 -20 A 20 20 0 0 1 20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <path d="M 0 20 A 20 20 0 0 1 -20 0"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.3"
+            marker-end="url(#arrow)"/>
+
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="360"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </g>
+
+    <!-- Plate Base -->
+    <circle cx="0" cy="0" r="11"
+            fill="url(#plateOuter)"
+            stroke="#cfcfcf"
+            stroke-width="0.8"
+            filter="url(#shadow)"/>
+
+    <!-- Rim -->
+    <circle cx="0" cy="0" r="9"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.8"/>
+
+    <!-- Inner Bowl -->
+    <circle cx="0" cy="0" r="6.5"
+            fill="url(#plateInner)"
+            stroke="#e0e0e0"
+            stroke-width="0.5"/>
+
+  </g>
+
+  <!-- RIGHT TEXT (closer) -->
+  <text x="122" y="32"
+        text-anchor="start"
+        font-family="Poppins, sans-serif"
+        font-weight="800"
+        font-size="18"
+        fill="#ffffff">
+    Serve
+  </text>
+
+</svg>
+
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="donate.html" class="nav-link">Donate Food</a>
+        <a href="login.html" class="nav-link login-btn">Login</a>
+        <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+          <i class="fas fa-moon"></i>
+        </button>
+      </nav>
+      <!-- Hamburger Button (mobile only) -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="ngo-list">
+    <div class="section-container">
+      <h2>Registered NGOs</h2>
+      <p class="section-subtitle">Find and connect with verified NGOs in your area</p>
+
+      <!-- Search & Filter -->
+      <div class="ngo-filters">
+        <input type="text" id="ngoSearchInput" placeholder="Search by name, city, or category...">
+        <div id="sortIndicator" class="sort-indicator" style="display: none; margin-top: 10px; font-size: 0.9em; color: var(--text-light);">
+          <i class="fas fa-sort"></i> Sorted by: <span id="sortType">name</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="ngoLoadingState" style="text-align: center; padding: 40px;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-color);"></i>
+        <p style="margin-top: 15px; color: var(--text-light);">Loading registered NGOs...</p>
+      </div>
+
+      <!-- NGO Grid -->
+      <div id="ngoGrid" class="ngo-grid" style="display: none;">
+        <!-- NGO cards will be loaded here dynamically -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="ngoEmptyState" style="text-align: center; padding: 40px; display: none;">
+        <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-light); opacity: 0.5;"></i>
+        <p style="margin-top: 15px; color: var(--text-light);">No NGOs found. Please try different filters.</p>
+      </div>
+    </div>
+  </section>
+
+  <script src="script/api-config.js"></script>
+  <script src="script/api-utils.js"></script>
+  
+  <script src="script/shared-utils.js"></script>
+  <script src="script/find-ngo-handler.js"></script>
+  <script src="script/all.js"></script>
+</body>
+
+</html>
