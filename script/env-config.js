@@ -7,10 +7,10 @@
  */
 
 const ENV_CONFIG = {
-    // Update this URL to your Render backend: https://feedlink-backend.onrender.com/api
+    // Update this URL to your Render backend: https://secondserve-backend.onrender.com/api
     API_BASE_URL: typeof window !== 'undefined' && window.location.hostname === 'localhost' 
         ? 'http://localhost:5000/api'
-        : 'https://feedlink-backend.onrender.com/api',
+        : 'https://secondserve-backend.onrender.com/api',
     ENVIRONMENT: typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'development' : 'production',
     DEBUG_MODE: typeof window !== 'undefined' && window.location.hostname === 'localhost',
     LOG_API_CALLS: typeof window !== 'undefined' && window.location.hostname === 'localhost',
